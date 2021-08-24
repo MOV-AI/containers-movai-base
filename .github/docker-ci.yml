@@ -1,0 +1,73 @@
+name: "Deploy to Docker Registry"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  DeployMelodic:
+    # this job will only run if the PR has been merged
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Hadolint melodic
+        uses: hadolint/hadolint-action@v1.5.0
+        with:
+          dockerfile: melodic/Dockerfile
+          format: tty
+          failure-threshold: error # optional, default is info
+          # A space separated string of rules to ignore
+          ignore: # optional
+          # Path to a config file
+          config: # optional
+
+      - name: Login to Movai Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.PORTUS_APP_USER}}
+          password: ${{secrets.PORTUS_APP_TOKEN}}
+          registry: registry.cloud.mov.ai
+
+      - name: Build and push melodic
+        uses: docker/build-push-action@v2
+        with:
+          context: melodic
+          push: true
+          tags: devops/movai-base:melodic
+          buildargs:
+
+  DeployNoetic:
+    # this job will only run if the PR has been merged
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Hadolint noetic
+        uses: hadolint/hadolint-action@v1.5.0
+        with:
+          dockerfile: noetic/Dockerfile
+          format: tty
+          failure-threshold: error # optional, default is info
+          # A space separated string of rules to ignore
+          ignore: # optional
+          # Path to a config file
+          config: # optional
+
+      - name: Login to Movai Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.PORTUS_APP_USER}}
+          password: ${{secrets.PORTUS_APP_TOKEN}}
+          registry: registry.cloud.mov.ai
+
+      - name: Build and push noetic
+        uses: docker/build-push-action@v2
+        with:
+          context: noetic
+          push: true
+          tags: devops/movai-base:noetic
+          buildargs:

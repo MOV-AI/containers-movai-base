@@ -1,0 +1,6 @@
+# List of folders to create as user
+USER_FOLDERS=(
+    ${APP_LOGS}
+    ${APP_PATH}
+    ${APP_UPDATES}
+)

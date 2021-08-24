@@ -1,0 +1,13 @@
+# tools
+less
+tree
+bash-completion
+wget
+curl
+software-properties-common
+unzip
+sudo
+# python
+python3.6
+python3-pip
+python3-setuptools
