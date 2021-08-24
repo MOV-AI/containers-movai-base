@@ -39,6 +39,7 @@ jobs:
           push: true
           tags: devops/movai-base:melodic
           buildargs:
+          registry: registry.cloud.mov.ai
 
   DeployNoetic:
     # this job will only run if the PR has been merged
@@ -73,3 +74,4 @@ jobs:
           push: true
           tags: devops/movai-base:noetic
           buildargs:
+          registry: registry.cloud.mov.ai
