@@ -27,8 +27,8 @@ jobs:
       - name: Login to Movai Registry
         uses: docker/login-action@v1
         with:
-          username: ${{secrets.PORTUS_APP_USER}}
-          password: ${{secrets.PORTUS_APP_TOKEN}}
+          username: ${{ secrets.PORTUS_APP_USER }}
+          password: ${{ secrets.PORTUS_APP_TOKEN }}
           registry: registry.cloud.mov.ai
 
       - name: Build and push melodic
@@ -37,9 +37,8 @@ jobs:
           context: .
           file: melodic/Dockerfile
           push: true
-          tags: devops/movai-base:melodic
+          tags: registry.cloud.mov.ai/devops/movai-base:melodic
           buildargs:
-          registry: registry.cloud.mov.ai
 
   DeployNoetic:
     # this job will only run if the PR has been merged
@@ -62,8 +61,8 @@ jobs:
       - name: Login to Movai Registry
         uses: docker/login-action@v1
         with:
-          username: ${{secrets.PORTUS_APP_USER}}
-          password: ${{secrets.PORTUS_APP_TOKEN}}
+          username: ${{ secrets.PORTUS_APP_USER }}
+          password: ${{ secrets.PORTUS_APP_TOKEN }}
           registry: registry.cloud.mov.ai
 
       - name: Build and push noetic
@@ -72,6 +71,5 @@ jobs:
           context: .
           file: noetic/Dockerfile
           push: true
-          tags: devops/movai-base:noetic
+          tags: registry.cloud.mov.ai/devops/movai-base:noetic
           buildargs:
-          registry: registry.cloud.mov.ai
