@@ -1,5 +1,5 @@
 # This Dockerfile is the base image for Mov.ai - Based on ROS NOETIC
-FROM ros:melodic-robot
+FROM ros:noetic-robot
 
 # Labels
 LABEL description="MOV.AI Base Image"
