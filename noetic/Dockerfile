@@ -21,7 +21,11 @@ ENV APP_PATH="${MOVAI_HOME}/app" \
 
 # Create Default User and copy default settings
 RUN adduser --uid ${USER_ID} --home ${MOVAI_HOME} --disabled-password --gecos '' movai && \
-    apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key "${ROS_GPG_KEY}"
+    apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key "${ROS_GPG_KEY}" && \
+    apt-get update && apt-get upgrade -y &&\
+    apt-get clean &&\
+    rm -rf /var/lib/apt/lists/*
+
 COPY --chown=movai:movai files/bashrc.bash ${MOVAI_HOME}/.bashrc
 COPY --chown=movai:movai files/welcome ${MOVAI_HOME}/.welcome
 
