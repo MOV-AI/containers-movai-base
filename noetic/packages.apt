@@ -7,7 +7,8 @@ curl
 software-properties-common
 unzip
 sudo
+vim
 # python
-python3.6
+python3.8
 python3-pip
 python3-setuptools
