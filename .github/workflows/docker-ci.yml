@@ -1,15 +1,19 @@
 name: "Deploy to Docker Registry"
 
 on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
   push:
     branches:
       - main
-
+  pull_request:
+    branches:
+      - main
 jobs:
   DeployMelodic:
-    # this job will only run if the PR has been merged
     runs-on: ubuntu-20.04
     steps:
+      - run: echo "Running on branch ${{ github.ref }}"
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -36,14 +40,16 @@ jobs:
         with:
           context: .
           file: melodic/Dockerfile
-          push: true
-          tags: registry.cloud.mov.ai/devops/movai-base:melodic
-          buildargs:
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: |
+            registry.cloud.mov.ai/devops/movai-base:melodic
+          build-args:
+          pull: true
 
   DeployNoetic:
-    # this job will only run if the PR has been merged
     runs-on: ubuntu-20.04
     steps:
+      - run: echo "Running on branch ${{ github.ref }}"
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -70,6 +76,8 @@ jobs:
         with:
           context: .
           file: noetic/Dockerfile
-          push: true
-          tags: registry.cloud.mov.ai/devops/movai-base:noetic
-          buildargs:
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: |
+            registry.cloud.mov.ai/devops/movai-base:noetic
+          build-args:
+          pull: true
