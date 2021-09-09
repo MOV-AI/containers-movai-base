@@ -1,14 +1,26 @@
+# MOV.AI base packages
 # tools
+apt-utils
+rsync
+nano
+vim
+git
+md5deep
 less
 tree
 bash-completion
-wget
-curl
 software-properties-common
 unzip
 sudo
-vim
+# networking
+wget
+curl
+netbase
+openssh-client
+iputils-ping
 # python
 python3.6
-python3-pip
-python3-setuptools
+python3.6-pip
+python3.6-setuptools
+# redis
+redis-tools
