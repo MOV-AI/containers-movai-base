@@ -1,3 +1,5 @@
+[![main](https://github.com/MOV-AI/containers-movai-base/actions/workflows/docker-ci.yml/badge.svg?branch=main)](https://github.com/MOV-AI/containers-movai-base/actions/workflows/docker-ci.yml)
+
 # docker-movai-base
 
 Base Docker image of MOV.AI Framework
