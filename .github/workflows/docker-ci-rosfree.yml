@@ -10,14 +10,14 @@ on:
     branches:
       - main
 jobs:
-  DeployMelodic:
+  DeployBionic:
     runs-on: ubuntu-20.04
     steps:
       - run: echo "Running on branch ${{ github.ref }}"
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Hadolint melodic
+      - name: Hadolint Bionic
         uses: hadolint/hadolint-action@v1.6.0
         with:
           dockerfile: melodic/Dockerfile-rosfree
@@ -35,7 +35,7 @@ jobs:
           password: ${{ secrets.PORTUS_APP_TOKEN }}
           registry: registry.cloud.mov.ai
 
-      - name: Build and push melodic
+      - name: Build and push Bionic
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -46,14 +46,14 @@ jobs:
           build-args:
           pull: true
 
-  DeployNoetic:
+  DeployFossa:
     runs-on: ubuntu-20.04
     steps:
       - run: echo "Running on branch ${{ github.ref }}"
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Hadolint noetic
+      - name: Hadolint Fossa
         uses: hadolint/hadolint-action@v1.6.0
         with:
           dockerfile: noetic/Dockerfile-rosfree
@@ -71,7 +71,7 @@ jobs:
           password: ${{ secrets.PORTUS_APP_TOKEN }}
           registry: registry.cloud.mov.ai
 
-      - name: Build and push noetic
+      - name: Build and push Fossa
         uses: docker/build-push-action@v2
         with:
           context: .
