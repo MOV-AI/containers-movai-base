@@ -20,7 +20,7 @@ jobs:
       - name: Hadolint melodic
         uses: hadolint/hadolint-action@v1.6.0
         with:
-          dockerfile: melodic/Dockerfile
+          dockerfile: melodic/Dockerfile-rosfree
           format: tty
           failure-threshold: error # optional, default is info
           # A space separated string of rules to ignore
@@ -39,10 +39,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: melodic/Dockerfile
+          file: melodic/Dockerfile-rosfree
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
-            registry.cloud.mov.ai/devops/movai-base:melodic
+            registry.cloud.mov.ai/devops/movai-base:18.04
           build-args:
           pull: true
 
@@ -56,7 +56,7 @@ jobs:
       - name: Hadolint noetic
         uses: hadolint/hadolint-action@v1.6.0
         with:
-          dockerfile: noetic/Dockerfile
+          dockerfile: noetic/Dockerfile-rosfree
           format: tty
           failure-threshold: error # optional, default is info
           # A space separated string of rules to ignore
@@ -75,9 +75,9 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: noetic/Dockerfile
+          file: noetic/Dockerfile-rosfree
           push: ${{ github.ref == 'refs/heads/main' }}
           tags: |
-            registry.cloud.mov.ai/devops/movai-base:noetic
+            registry.cloud.mov.ai/devops/movai-base:20.04
           build-args:
           pull: true

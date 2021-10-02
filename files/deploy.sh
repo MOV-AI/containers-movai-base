@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2019 Alexandre Pires (alexandre.pires@mov.ai)
+# Copyright 2021 MOV.AI (devops@mov.ai)
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.

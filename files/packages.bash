@@ -11,13 +11,8 @@ SUDO_COMMANDS=(
 )
 
 # Setup available sudo commands for user movai
-adduser movai sudo 
+adduser movai sudo
 touch /etc/sudoers.d/movai
 for SUDO_COMMAND in ${SUDO_COMMANDS[@]}; do
     echo "%sudo ALL=(ALL) NOPASSWD:SETENV: ${SUDO_COMMAND}" >> /etc/sudoers.d/movai
 done
-
-# Install powerline
-#POWERLINE_URL=https://github.com/justjanne/powerline-go/releases/latest/download/powerline-go-linux-amd64
-#wget -O /usr/local/bin/powerline-go ${POWERLINE_URL}
-#chmod +x usr/local/bin/powerline-go
