@@ -1,4 +1,4 @@
-name: "Build&Deploy ROS bases"
+name: "Build&Deploy ROSFREE bases"
 
 on:
   # Trigger the workflow on push or pull request,
