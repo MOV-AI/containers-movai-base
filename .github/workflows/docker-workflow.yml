@@ -47,6 +47,9 @@ jobs:
 
       - name: "Verify push and tag vars from env"
         id: get_version
+        env:
+          GITHUB_REF: ${{ inputs.github_ref }}
+          DOCKER_PUSH: ${{ env.DOCKER_PUSH }}
         run: |
           echo ${GITHUB_REF}
           if "${DOCKER_PUSH}" = "true"; then
