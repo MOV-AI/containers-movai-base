@@ -20,6 +20,9 @@ on:
 jobs:
   build_deploy:
     runs-on: ubuntu-20.04
+    env:
+      DOCKER_PUSH: ${{ contains(inputs.github_ref, 'refs/heads/main') || contains(inputs.github_ref, 'refs/heads/v*.*.*')}}
+      GITHUB_REF: ${{ inputs.github_ref }}
     steps:
       - run: echo "Running on branch ${{ inputs.github_ref }}"
       - name: Checkout
@@ -43,32 +46,23 @@ jobs:
           password: ${{ secrets.registry_password }}
           registry: registry.cloud.mov.ai
 
-      - name: "Set puash and tag vars from github_ref"
-        env:
-          PUSH_VAR: ${{ contains(inputs.github_ref, 'refs/heads/main') || contains(inputs.github_ref, 'refs/heads/v*.*.*')}}
-        run: |
-          if ${PUSH_VAR} == true; then
-            echo "push=true" >> $GITHUB_ENV
-            echo "push flag set to true"
-            echo "VERSION=${GITHUB_REF#*/}" >> $GITHUB_ENV
-            echo "VERSION set to ${GITHUB_REF#*/}
-          else
-            echo "push=false" >> $GITHUB_ENV
-            echo "push flag set to false"
-            echo "VERSION=local" >> $GITHUB_ENV
-            echo "VERSION set to local
-          fi
-      - name: Get the version
+      - name: "Verify push and tag vars from env"
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        run: |
+          if ${DOCKER_PUSH} == true; then
+            echo ::set-output name=DOCKER_TAG::${GITHUB_REF/refs\/tags\//}
+          else
+            echo ::set-output name=DOCKER_TAG::${GITHUB_REF/refs\/tags\//}
+          fi
 
-      - name: Build and push ${{ inputs.docker_image }}:${{ steps.get_version.outputs.VERSION }}
+
+      - name: Build and push:${{ env.push }} of ${{ inputs.docker_image }}:${{ env.VERSION }}
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ${{ inputs.docker_file }}
-          push: ${{ env.push }}
+          push: ${{ env.DOCKER_PUSH }}
           tags: |
-            ${{ inputs.docker_image }}:${{ env.VERSION }}
+            ${{ inputs.docker_image }}:${{ steps.get_version.outputs.DOCKER_TAG }}
           build-args:
           pull: true
