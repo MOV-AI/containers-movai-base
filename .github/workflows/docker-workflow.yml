@@ -1,0 +1,70 @@
+name: Build, Deploy and release Docker images
+on:
+  workflow_call:
+    inputs:
+      docker_file:
+        required: true
+        type: string
+      docker_image:
+        required: true
+        type: string
+      github_ref:
+        required: true
+        type: string
+    secrets:
+      registry_user:
+        required: true
+      registry_password:
+        required: true
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - run: echo "Running on branch ${{ github_ref }}"
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Hadolint ${{ docker_file }}
+        uses: hadolint/hadolint-action@v1.6.0
+        with:
+          dockerfile: ${{ docker_file }}
+          format: tty
+          failure-threshold: error # optional, default is info
+          # A space separated string of rules to ignore
+          ignore: # optional
+          # Path to a config file
+          config: # optional
+
+      - name: Login to Movai Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ registry_user }}
+          password: ${{ registry_password }}
+          registry: registry.cloud.mov.ai
+
+      - name: "Set push flag from github_ref"
+        env:
+          PUSH_VAR: ${{ contains(github_ref, 'refs/heads/main') || contains(github_ref, 'refs/heads/v*.*.*')}}
+        run: |
+          if ${PUSH_VAR} == true; then
+            echo "push=true" >> $GITHUB_ENV
+            echo "push flag set to true"
+          else
+            echo "push=false" >> $GITHUB_ENV
+            echo "push flag set to false"
+          fi
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Build and push ${{ docker_image }}:${{ steps.get_version.outputs.VERSION }}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ${{ docker_file }}
+          push: env.push
+          tags: |
+            ${{ docker_image }}:${{ steps.get_version.outputs.VERSION }}
+          build-args:
+          pull: true
