@@ -19,6 +19,7 @@ jobs:
       docker_file: melodic/Dockerfile
       docker_image: registry.cloud.mov.ai/devops/movai-base-melodic
       github_ref: github.ref
+    secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
   call-workflow:
@@ -27,6 +28,7 @@ jobs:
       docker_file: noetic/Dockerfile
       docker_image: registry.cloud.mov.ai/devops/movai-base-noetic
       github_ref: github.ref
+    secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
   call-workflow:
@@ -35,6 +37,7 @@ jobs:
       docker_file: melodic/Dockerfile-rosfree
       docker_image: registry.cloud.mov.ai/devops/movai-base-bionic
       github_ref: github.ref
+    secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
   call-workflow:
@@ -43,6 +46,7 @@ jobs:
       docker_file: noetic/Dockerfile-rosfree
       docker_image: registry.cloud.mov.ai/devops/movai-base-focal
       github_ref: github.ref
+    secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
 
