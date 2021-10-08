@@ -21,8 +21,7 @@ jobs:
   build_deploy:
     runs-on: ubuntu-20.04
     env:
-      DOCKER_PUSH: ${{ contains(inputs.github_ref, 'refs/heads/main') || contains(inputs.github_ref, 'refs/heads/v*.*.*')}}
-      GITHUB_REF:  ${{ inputs.github_ref }}
+      DOCKER_PUSH: ${{ contains(inputs.github_ref, 'refs/heads/main') || contains(inputs.github_ref, 'refs/tags/v*.*.*')}}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -51,7 +50,8 @@ jobs:
           GITHUB_REF: ${{ inputs.github_ref }}
           DOCKER_PUSH: ${{ env.DOCKER_PUSH }}
         run: |
-          echo ${GITHUB_REF}
+          echo $GITHUB_REF
+          echo $DOCKER_PUSH
           if "${DOCKER_PUSH}" = "true"; then
             if "${GITHUB_REF}" = "refs/heads/main"; then
               echo ::set-output name=DOCKER_TAG::latest
@@ -62,7 +62,7 @@ jobs:
             echo ::set-output name=DOCKER_TAG::local
           fi
 
-      - name: Build and push:${{ env.push }} of ${{ inputs.docker_image }}:${{ steps.get_version.outputs.DOCKER_TAG }}
+      - name: Build and push:${{ env.DOCKER_PUSH }} of ${{ inputs.docker_image }}:${{ steps.get_version.outputs.DOCKER_TAG }}
         uses: docker/build-push-action@v2
         with:
           context: .
