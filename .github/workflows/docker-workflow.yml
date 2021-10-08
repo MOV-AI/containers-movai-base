@@ -24,7 +24,7 @@ jobs:
       DOCKER_PUSH: ${{ contains(inputs.github_ref, 'refs/heads/main') || contains(inputs.github_ref, 'refs/heads/v*.*.*')}}
       GITHUB_REF:  ${{ inputs.github_ref }}
     steps:
-      - name: Checkout ${{ inputs.github_ref }}
+      - name: Checkout
         uses: actions/checkout@v2
 
       - name: Hadolint ${{ inputs.docker_file }}
@@ -48,8 +48,9 @@ jobs:
       - name: "Verify push and tag vars from env"
         id: get_version
         run: |
+          echo ${GITHUB_REF}
           if "${DOCKER_PUSH}" = "true"; then
-            if "${GITHUB_REF}" = "refs/heads/main"
+            if "${GITHUB_REF}" = "refs/heads/main"; then
               echo ::set-output name=DOCKER_TAG::latest
             else
               echo ::set-output name=DOCKER_TAG::${GITHUB_REF##*/}
