@@ -43,16 +43,20 @@ jobs:
           password: ${{ secrets.registry_password }}
           registry: registry.cloud.mov.ai
 
-      - name: "Set push flag from github_ref"
+      - name: "Set puash and tag vars from github_ref"
         env:
           PUSH_VAR: ${{ contains(inputs.github_ref, 'refs/heads/main') || contains(inputs.github_ref, 'refs/heads/v*.*.*')}}
         run: |
           if ${PUSH_VAR} == true; then
             echo "push=true" >> $GITHUB_ENV
             echo "push flag set to true"
+            echo "VERSION=${GITHUB_REF#*/}" >> $GITHUB_ENV
+            echo "VERSION set to ${GITHUB_REF#*/}
           else
             echo "push=false" >> $GITHUB_ENV
             echo "push flag set to false"
+            echo "VERSION=local" >> $GITHUB_ENV
+            echo "VERSION set to local
           fi
       - name: Get the version
         id: get_version
@@ -63,8 +67,8 @@ jobs:
         with:
           context: .
           file: ${{ inputs.docker_file }}
-          push: env.push
+          push: ${{ env.push }}
           tags: |
-            ${{ inputs.docker_image }}:${{ steps.get_version.outputs.VERSION }}
+            ${{ inputs.docker_image }}:${{ env.VERSION }}
           build-args:
           pull: true
