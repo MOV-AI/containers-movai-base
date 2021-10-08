@@ -13,7 +13,7 @@ on:
     branches:
       - main
 jobs:
-  call-workflow:
+  movai-base-melodic:
     uses: MOV-AI/containers-movai-base/.github/workflows/docker-workflow.yml@feature/rosfree
     with:
       docker_file: melodic/Dockerfile
@@ -22,7 +22,7 @@ jobs:
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-  call-workflow:
+  movai-base-noetic:
     uses: MOV-AI/containers-movai-base/.github/workflows/docker-workflow.yml@feature/rosfree
     with:
       docker_file: noetic/Dockerfile
@@ -31,7 +31,7 @@ jobs:
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-  call-workflow:
+  movai-base-bionic:
     uses: MOV-AI/containers-movai-base/.github/workflows/docker-workflow.yml@feature/rosfree
     with:
       docker_file: melodic/Dockerfile-rosfree
@@ -40,7 +40,7 @@ jobs:
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-  call-workflow:
+  movai-base-focal:
     uses: MOV-AI/containers-movai-base/.github/workflows/docker-workflow.yml@feature/rosfree
     with:
       docker_file: noetic/Dockerfile-rosfree
