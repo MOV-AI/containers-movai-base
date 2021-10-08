@@ -22,10 +22,9 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       DOCKER_PUSH: ${{ contains(inputs.github_ref, 'refs/heads/main') || contains(inputs.github_ref, 'refs/heads/v*.*.*')}}
-      GITHUB_REF: inputs.github_ref
+      GITHUB_REF:  ${{ inputs.github_ref }}
     steps:
-      - run: echo "Running on branch ${GITHUB_REF}"
-      - name: Checkout
+      - name: Checkout ${{ inputs.github_ref }}
         uses: actions/checkout@v2
 
       - name: Hadolint ${{ inputs.docker_file }}
