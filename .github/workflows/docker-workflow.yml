@@ -21,14 +21,14 @@ jobs:
   build_deploy:
     runs-on: ubuntu-20.04
     steps:
-      - run: echo "Running on branch ${{ github_ref }}"
+      - run: echo "Running on branch ${{ inputs.github_ref }}"
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Hadolint ${{ docker_file }}
+      - name: Hadolint ${{ inputs.docker_file }}
         uses: hadolint/hadolint-action@v1.6.0
         with:
-          dockerfile: ${{ docker_file }}
+          dockerfile: ${{ inputs.docker_file }}
           format: tty
           failure-threshold: error # optional, default is info
           # A space separated string of rules to ignore
@@ -39,13 +39,13 @@ jobs:
       - name: Login to Movai Registry
         uses: docker/login-action@v1
         with:
-          username: ${{ registry_user }}
-          password: ${{ registry_password }}
+          username: ${{ secrets.registry_user }}
+          password: ${{ secrets.registry_password }}
           registry: registry.cloud.mov.ai
 
       - name: "Set push flag from github_ref"
         env:
-          PUSH_VAR: ${{ contains(github_ref, 'refs/heads/main') || contains(github_ref, 'refs/heads/v*.*.*')}}
+          PUSH_VAR: ${{ contains(inputs.github_ref, 'refs/heads/main') || contains(inputs.github_ref, 'refs/heads/v*.*.*')}}
         run: |
           if ${PUSH_VAR} == true; then
             echo "push=true" >> $GITHUB_ENV
@@ -58,13 +58,13 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
-      - name: Build and push ${{ docker_image }}:${{ steps.get_version.outputs.VERSION }}
+      - name: Build and push ${{ inputs.docker_image }}:${{ steps.get_version.outputs.VERSION }}
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ${{ docker_file }}
+          file: ${{ inputs.docker_file }}
           push: env.push
           tags: |
-            ${{ docker_image }}:${{ steps.get_version.outputs.VERSION }}
+            ${{ inputs.docker_image }}:${{ steps.get_version.outputs.VERSION }}
           build-args:
           pull: true
