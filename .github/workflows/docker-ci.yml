@@ -12,6 +12,9 @@ on:
   pull_request:
     branches:
       - main
+  on:
+    release:
+      types: [released]
 jobs:
   movai-base-melodic:
     uses: MOV-AI/containers-movai-base/.github/workflows/docker-workflow.yml@feature/rosfree
