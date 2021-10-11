@@ -1,0 +1,74 @@
+name: Build, Deploy and release Docker images
+on:
+  workflow_call:
+    inputs:
+      docker_file:
+        required: true
+        type: string
+      docker_image:
+        required: true
+        type: string
+      github_ref:
+        required: true
+        type: string
+    secrets:
+      registry_user:
+        required: true
+      registry_password:
+        required: true
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-20.04
+    env:
+      DOCKER_PUSH: ${{ contains(inputs.github_ref, 'refs/heads/main') || contains(inputs.github_ref, 'refs/tags/v')}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Hadolint ${{ inputs.docker_file }}
+        uses: hadolint/hadolint-action@v1.6.0
+        with:
+          dockerfile: ${{ inputs.docker_file }}
+          format: tty
+          failure-threshold: error # optional, default is info
+          # A space separated string of rules to ignore
+          ignore: # optional
+          # Path to a config file
+          config: # optional
+
+      - name: Login to Movai Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.registry_user }}
+          password: ${{ secrets.registry_password }}
+          registry: registry.cloud.mov.ai
+
+      - name: "Verify push and tag vars from env"
+        id: get_version
+        env:
+          GITHUB_REF: ${{ inputs.github_ref }}
+          DOCKER_PUSH: ${{ env.DOCKER_PUSH }}
+        run: |
+          echo $GITHUB_REF
+          echo $DOCKER_PUSH
+          if "${DOCKER_PUSH}" = "true"; then
+            if "${GITHUB_REF}" = "refs/heads/main"; then
+              echo ::set-output name=DOCKER_TAG::latest
+            else
+              echo ::set-output name=DOCKER_TAG::${GITHUB_REF##*/}
+            fi
+          else
+            echo ::set-output name=DOCKER_TAG::local
+          fi
+
+      - name: Build and push:${{ env.DOCKER_PUSH }} of ${{ inputs.docker_image }}:${{ steps.get_version.outputs.DOCKER_TAG }}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ${{ inputs.docker_file }}
+          push: ${{ env.DOCKER_PUSH }}
+          tags: |
+            ${{ inputs.docker_image }}:${{ steps.get_version.outputs.DOCKER_TAG }}
+          build-args:
+          pull: true

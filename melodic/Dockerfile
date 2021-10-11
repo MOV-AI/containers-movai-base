@@ -9,6 +9,7 @@ LABEL maintainer="devops@mov.ai"
 ARG USER_ID=1000
 ARG ROS_GPG_KEY=C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 ARG ROS_VERSION="melodic"
+ARG HEALTH_NODE_URL="http://health-node:8081"
 
 ### Environment config
 ENV MOVAI_HOME="/opt/mov.ai" \
@@ -16,12 +17,16 @@ ENV MOVAI_HOME="/opt/mov.ai" \
 ENV APP_PATH="${MOVAI_HOME}/app" \
     APP_LOGS="${MOVAI_HOME}/logs" \
     APP_UPDATES="${MOVAI_HOME}/updates" \
-    LOG_HTTP_HOST="http://health-node:8081" \
+    LOG_HTTP_HOST="${HEALTH_NODE_URL}" \
     USER_ID=${USER_ID}
 
 # Create Default User and copy default settings
 RUN adduser --uid ${USER_ID} --home ${MOVAI_HOME} --disabled-password --gecos '' movai && \
-    apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key "${ROS_GPG_KEY}"
+    apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key "${ROS_GPG_KEY}" && \
+    apt-get update && apt-get upgrade -y &&\
+    apt-get clean &&\
+    rm -rf /var/lib/apt/lists/*
+
 COPY --chown=movai:movai files/bashrc.bash ${MOVAI_HOME}/.bashrc
 COPY --chown=movai:movai files/welcome ${MOVAI_HOME}/.welcome
 
