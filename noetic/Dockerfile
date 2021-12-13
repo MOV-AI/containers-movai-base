@@ -13,7 +13,8 @@ ARG HEALTH_NODE_URL="http://health-node:8081"
 
 ### Environment config
 ENV MOVAI_HOME="/opt/mov.ai" \
-    ROS_VERSION="$ROS_VERSION"
+    ROS_VERSION="$ROS_VERSION"\
+    DEBIAN_FRONTEND=noninteractive
 ENV APP_PATH="${MOVAI_HOME}/app" \
     APP_LOGS="${MOVAI_HOME}/logs" \
     APP_UPDATES="${MOVAI_HOME}/updates" \
