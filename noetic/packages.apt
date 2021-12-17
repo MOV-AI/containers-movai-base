@@ -12,6 +12,7 @@ bash-completion
 software-properties-common
 unzip
 sudo
+gnupg2
 # networking
 wget
 curl
