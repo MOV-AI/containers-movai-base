@@ -22,6 +22,7 @@ ENV APP_PATH="${MOVAI_HOME}/app" \
     USER_ID=${USER_ID}
 
 # Create Default User and copy default settings
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN adduser --uid ${USER_ID} --home ${MOVAI_HOME} --disabled-password --gecos '' movai && \
     apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key "${ROS_GPG_KEY}" && \
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
