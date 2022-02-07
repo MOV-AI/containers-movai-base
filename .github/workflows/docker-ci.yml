@@ -12,9 +12,8 @@ on:
   pull_request:
     branches:
       - main
-  # on:
-  #   release:
-  #     types: [released]
+  release:
+    types: [released]
 jobs:
   movai-base-melodic:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
