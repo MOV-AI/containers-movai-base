@@ -54,7 +54,7 @@ function compare_version() {
 }
 
 # If we have updates on our update folder we do the update
-if [ $(ls ${APP_UPDATES}/movai-*_latest_*.deb 2>/dev/null) ]; then
+if [ $(ls ${APP_UPDATES}/movai-*.deb 2>/dev/null) ]; then
     # Run the update procedure and exit if everything goes well
     update.sh && exit
 fi
