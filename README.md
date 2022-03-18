@@ -43,3 +43,5 @@ Build MOVAI image based on Ubuntu 20.04 :
 
     docker build -t movai-base:focal -f noetic/Dockerfile-rosfree .
 
+## License
+https://www.mov.ai/flow-license/
