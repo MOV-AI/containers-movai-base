@@ -33,10 +33,6 @@ function _update_ps1() {
     PS1="(${APP_NAME})$(/usr/local/bin/powerline-go -error $? -modules "venv,user,cwd,perms,git,exit,root")"
 }
 
-#if [ "$TERM" != "linux" ] && [ -f "/usr/local/bin/powerline-go" ]; then
-#    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
-#fi
-
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -59,6 +55,6 @@ fi
 
 export PYTHONPATH=${APP_PATH}:${PYTHONPATH}
 
-cat ${MOVAI_HOME}/.welcome
+cat "${MOVAI_HOME}/.welcome"
 
 printf "Welcome! Have fun!\n"
