@@ -21,9 +21,11 @@ The images come with some handy scripts which can be launched on startup if some
 - APT_REPOS_LIST : comma separated list of ppa to be given to `add-apt-repository`
 - APT_INSTALL_LIST : comma separated lsit of packages to be installed via APT
 
-Example :
+Examples :
 
-    docker run --rm -u movai -e APT_KEYS_URL_LIST="https://download.docker.com/linux/ubuntu/gpg,https://apt.releases.hashicorp.com/gpg" -e APT_REPOS_LIST='deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable,deb [arch=amd64] https://apt.releases.hashicorp.com bionic main' -e APT_INSTALL_LIST='docker-ce,terraform' movai-base:melodic
+    docker run --name base -u movai -e APT_AUTOINSTALL=once -e APT_KEYS_URL_LIST="https://download.docker.com/linux/ubuntu/gpg,https://apt.releases.hashicorp.com/gpg" -e APT_REPOS_LIST='deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable,deb [arch=amd64] https://apt.releases.hashicorp.com bionic main' -e APT_INSTALL_LIST='docker-ce,terraform' movai-base:melodic
+
+    docker run --name base -d -u movai -e APT_AUTOINSTALL=once -e APT_KEYS_URL_LIST="https://download.docker.com/linux/ubuntu/gpg,https://apt.releases.hashicorp.com/gpg" -e APT_REPOS_LIST='deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable,deb [arch=amd64] https://apt.releases.hashicorp.com focal main' -e APT_INSTALL_LIST='docker-ce,terraform' movai-base:noetic
 
 ## Build
 
