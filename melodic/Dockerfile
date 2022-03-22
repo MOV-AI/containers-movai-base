@@ -21,11 +21,7 @@ ENV APP_PATH="${MOVAI_HOME}/app" \
     USER_ID=${USER_ID}
 
 # Create Default User and copy default settings
-RUN adduser --uid ${USER_ID} --home ${MOVAI_HOME} --disabled-password --gecos '' movai && \
-    apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key "${ROS_GPG_KEY}" && \
-    apt-get update && apt-get upgrade -y &&\
-    apt-get clean &&\
-    rm -rf /var/lib/apt/lists/*
+RUN adduser --uid ${USER_ID} --home ${MOVAI_HOME} --disabled-password --gecos '' movai
 
 COPY --chown=movai:movai files/bashrc.bash ${MOVAI_HOME}/.bashrc
 COPY --chown=movai:movai files/welcome ${MOVAI_HOME}/.welcome
@@ -34,7 +30,6 @@ COPY --chown=movai:movai files/welcome ${MOVAI_HOME}/.welcome
 COPY files/user-provision.sh /usr/local/bin/
 COPY files/install-packages.sh /usr/local/bin/
 COPY --chown=movai:movai files/deploy.sh /usr/local/bin/deploy.sh
-COPY --chown=movai:movai files/update.sh /usr/local/bin/update.sh
 
 # Copy startup files
 COPY files/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
@@ -43,7 +38,12 @@ COPY files/movai-entrypoint.sh /usr/local/bin/movai-entrypoint.sh
 # Install base packages
 COPY files/packages.bash /tmp/packages.bash
 COPY $ROS_VERSION/packages.apt /tmp/packages.apt
-RUN /usr/local/bin/install-packages.sh
+RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key "${ROS_GPG_KEY}" &&\
+    apt-get update && apt-get upgrade -y &&\
+    /usr/local/bin/install-packages.sh &&\
+    apt-get clean &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    rm -rf /var/log/*
 
 # Run user provision
 COPY files/user.rc /tmp/user.rc
