@@ -23,6 +23,7 @@ jobs:
       public: true
       public_image: ce/movai-base-melodic
       github_ref: ${{ github.ref }}
+      snyk_check: true
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
@@ -35,6 +36,7 @@ jobs:
       public: true
       public_image: ce/movai-base-noetic
       github_ref: ${{ github.ref }}
+      snyk_check: true
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
@@ -47,6 +49,7 @@ jobs:
       public: true
       public_image: ce/movai-base-bionic
       github_ref: ${{ github.ref }}
+      snyk_check: true
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
@@ -59,6 +62,7 @@ jobs:
       public: true
       public_image: ce/movai-base-focal
       github_ref: ${{ github.ref }}
+      snyk_check: true
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
