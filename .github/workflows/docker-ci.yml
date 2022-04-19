@@ -16,37 +16,45 @@ on:
     types: [released]
 jobs:
   movai-base-melodic:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@feat/docker_args
     with:
       docker_file: melodic/Dockerfile
       docker_image: registry.cloud.mov.ai/devops/movai-base-melodic
+      public: true
+      public_image: ce/movai-base-melodic
       github_ref: ${{ github.ref }}
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
   movai-base-noetic:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@feat/docker_args
     with:
       docker_file: noetic/Dockerfile
       docker_image: registry.cloud.mov.ai/devops/movai-base-noetic
+      public: true
+      public_image: ce/movai-base-noetic
       github_ref: ${{ github.ref }}
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
   movai-base-bionic:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@feat/docker_args
     with:
       docker_file: melodic/Dockerfile-rosfree
       docker_image: registry.cloud.mov.ai/devops/movai-base-bionic
+      public: true
+      public_image: ce/movai-base-bionic
       github_ref: ${{ github.ref }}
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
   movai-base-focal:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@feat/docker_args
     with:
       docker_file: noetic/Dockerfile-rosfree
       docker_image: registry.cloud.mov.ai/devops/movai-base-focal
+      public: true
+      public_image: ce/movai-base-focal
       github_ref: ${{ github.ref }}
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
