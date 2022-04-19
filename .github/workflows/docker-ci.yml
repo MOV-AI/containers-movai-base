@@ -26,6 +26,7 @@ jobs:
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
+      snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-noetic:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@feat/docker_args
     with:
@@ -37,6 +38,7 @@ jobs:
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
+      snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-bionic:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@feat/docker_args
     with:
@@ -48,6 +50,7 @@ jobs:
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
+      snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-focal:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@feat/docker_args
     with:
@@ -59,4 +62,5 @@ jobs:
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
+      snyk_token: ${{ secrets.SNYK_TOKEN }}
 
