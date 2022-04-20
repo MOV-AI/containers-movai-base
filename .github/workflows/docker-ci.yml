@@ -19,7 +19,7 @@ jobs:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
     with:
       docker_file: melodic/Dockerfile
-      docker_image: registry.cloud.mov.ai/devops/movai-base-melodic
+      docker_image: devops/movai-base-melodic
       public: true
       public_image: ce/movai-base-melodic
       github_ref: ${{ github.ref }}
@@ -30,7 +30,7 @@ jobs:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
     with:
       docker_file: noetic/Dockerfile
-      docker_image: registry.cloud.mov.ai/devops/movai-base-noetic
+      docker_image: devops/movai-base-noetic
       public: true
       public_image: ce/movai-base-noetic
       github_ref: ${{ github.ref }}
@@ -41,7 +41,7 @@ jobs:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
     with:
       docker_file: melodic/Dockerfile-rosfree
-      docker_image: registry.cloud.mov.ai/devops/movai-base-bionic
+      docker_image: devops/movai-base-bionic
       public: true
       public_image: ce/movai-base-bionic
       github_ref: ${{ github.ref }}
@@ -52,7 +52,7 @@ jobs:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
     with:
       docker_file: noetic/Dockerfile-rosfree
-      docker_image: registry.cloud.mov.ai/devops/movai-base-focal
+      docker_image: devops/movai-base-focal
       public: true
       public_image: ce/movai-base-focal
       github_ref: ${{ github.ref }}
