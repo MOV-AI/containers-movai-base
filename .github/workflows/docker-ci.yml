@@ -16,7 +16,7 @@ on:
     types: [released]
 jobs:
   movai-base-melodic:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@feat/docker_args
     with:
       docker_file: melodic/Dockerfile
       docker_image: registry.cloud.mov.ai/devops/movai-base-melodic
@@ -27,7 +27,7 @@ jobs:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
   movai-base-noetic:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@feat/docker_args
     with:
       docker_file: noetic/Dockerfile
       docker_image: registry.cloud.mov.ai/devops/movai-base-noetic
@@ -38,7 +38,7 @@ jobs:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
   movai-base-bionic:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@feat/docker_args
     with:
       docker_file: melodic/Dockerfile-rosfree
       docker_image: registry.cloud.mov.ai/devops/movai-base-bionic
@@ -49,7 +49,7 @@ jobs:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
   movai-base-focal:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@feat/docker_args
     with:
       docker_file: noetic/Dockerfile-rosfree
       docker_image: registry.cloud.mov.ai/devops/movai-base-focal
