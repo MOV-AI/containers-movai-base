@@ -16,7 +16,7 @@ on:
     types: [released]
 jobs:
   movai-base-melodic:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v1
     with:
       docker_file: melodic/Dockerfile
       docker_image: devops/movai-base-melodic
