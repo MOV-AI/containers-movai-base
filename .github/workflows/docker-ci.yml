@@ -37,7 +37,7 @@ jobs:
       pub_registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
       snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-noetic:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v1
     with:
       docker_file: noetic/Dockerfile
       docker_image: devops/movai-base-noetic
@@ -57,7 +57,7 @@ jobs:
       snyk_token: ${{ secrets.SNYK_TOKEN }}
       platforms: linux/amd64, linux/arm/v7
   movai-base-bionic:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v1
     with:
       docker_file: melodic/Dockerfile-rosfree
       docker_image: devops/movai-base-bionic
@@ -76,7 +76,7 @@ jobs:
       pub_registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
       snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-focal:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@main
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v1
     with:
       docker_file: noetic/Dockerfile-rosfree
       docker_image: devops/movai-base-focal
