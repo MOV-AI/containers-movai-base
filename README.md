@@ -45,5 +45,17 @@ Build MOVAI image based on Ubuntu 20.04 :
 
     docker build -t movai-base:focal -f noetic/Dockerfile-rosfree .
 
+## Build for multi-arch
+
+
+    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    docker buildx create --name multiarch --driver docker-container --use
+    docker buildx inspect --bootstrap
+
+    DOCKER_PLATFORMS=linux/amd64,linux/armhf,linux/arm64
+    docker buildx build --pull --platform $DOCKER_PLATFORMS -t movai-base:noetic -f noetic/Dockerfile .
+
+    docker buildx build --push --pull --platform $DOCKER_PLATFORMS -t registry.aws.cloud.mov.ai/devops/multiarch-movai-base-noetic -f noetic/Dockerfile .
+
 ## License
 https://www.mov.ai/flow-license/
