@@ -55,7 +55,6 @@ jobs:
       pub_registry_user: ${{ secrets.PORTUS_APP_USER }}
       pub_registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
       snyk_token: ${{ secrets.SNYK_TOKEN }}
-      platforms: linux/amd64, linux/arm/v7
   movai-base-bionic:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v1
     with:
