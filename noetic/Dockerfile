@@ -39,13 +39,17 @@ COPY files/movai-entrypoint.sh /usr/local/bin/movai-entrypoint.sh
 COPY files/packages.bash /tmp/packages.bash
 COPY $ROS_VERSION/packages.apt /tmp/packages.apt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key "${ROS_GPG_KEY}" &&\
+
+RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
     apt-get update && apt-get upgrade -y &&\
     /usr/local/bin/install-packages.sh &&\
+    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add - && \
+    add-apt-repository "deb http://artifacts.aws.cloud.mov.ai/repository/ppa-proxy-ros focal main" && \
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* &&\
     rm -rf /var/log/*
+
 
 # Run user provision
 COPY files/user.rc /tmp/user.rc
