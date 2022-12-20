@@ -29,21 +29,29 @@ Examples :
 
 ## Build
 
-Build MOVAI image based on ROS melodic :
-
-    docker build -t movai-base:melodic -f melodic/Dockerfile .
-
 Build MOVAI image based on ROS noetic :
 
-    docker build -t movai-base:noetic -f noetic/Dockerfile .
+    docker build -t movai-base:noetic -f docker/noetic/Dockerfile .
 
 Build MOVAI image based on Ubuntu 18.04 :
 
-    docker build -t movai-base:bionic -f melodic/Dockerfile-rosfree .
+    docker build -t movai-base:bionic -f docker/melodic/Dockerfile-rosfree .
 
 Build MOVAI image based on Ubuntu 20.04 :
 
-    docker build -t movai-base:focal -f noetic/Dockerfile-rosfree .
+    docker build -t movai-base:focal -f docker/noetic/Dockerfile-rosfree .
+
+## Build for multi-arch
+
+
+    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    docker buildx create --name multiarch --driver docker-container --use
+    docker buildx inspect --bootstrap
+
+    DOCKER_PLATFORMS=linux/amd64,linux/armhf,linux/arm64
+    docker buildx build --pull --platform $DOCKER_PLATFORMS -t movai-base:noetic -f docker/noetic/Dockerfile .
+
+    docker buildx build --push --pull --platform $DOCKER_PLATFORMS -t registry.aws.cloud.mov.ai/devops/multiarch-movai-base-noetic -f noetic/Dockerfile .
 
 ## License
 https://www.mov.ai/flow-license/
