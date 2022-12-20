@@ -1,5 +1,5 @@
 # This Dockerfile is the base image for Mov.ai - Based on ROS NOETIC
-FROM ros:noetic-robot
+FROM ros:noetic-ros-base
 
 # Labels
 LABEL description="MOV.AI Base Image"
@@ -7,7 +7,6 @@ LABEL maintainer="devops@mov.ai"
 
 # Arguments
 ARG USER_ID=1000
-ARG ROS_GPG_KEY=C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 ARG ROS_VERSION="noetic"
 ARG HEALTH_NODE_URL="http://health-node:8081"
 
@@ -42,14 +41,13 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
-    apt-get update && apt-get upgrade -y &&\
+    apt-get update && apt-get upgrade -y && apt-get install -y curl --no-install-recommends &&\
+    curl -fsSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | sudo gpg --dearmor -o /usr/share/keyrings/ros.key &&\
+    echo "deb [signed-by=/usr/share/keyrings/ros.key] https://artifacts.aws.cloud.mov.ai/repository/ppa-proxy-ros focal main" | sudo tee /etc/apt/sources.list.d/movai-ros.list > /dev/null &&\
     /usr/local/bin/install-packages.sh &&\
-    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add - && \
-    add-apt-repository "deb http://artifacts.aws.cloud.mov.ai/repository/ppa-proxy-ros focal main" && \
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* &&\
     rm -rf /var/log/*
-
 
 # Run user provision
 COPY files/user.rc /tmp/user.rc
