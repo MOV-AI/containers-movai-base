@@ -37,7 +37,7 @@ COPY files/movai-entrypoint.sh /usr/local/bin/movai-entrypoint.sh
 
 # Install base packages
 COPY files/packages.bash /tmp/packages.bash
-COPY $ROS_VERSION/packages.apt /tmp/packages.apt
+COPY docker/$ROS_VERSION/packages.apt /tmp/packages.apt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN  echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
     apt-get update && apt-get upgrade -y &&\
