@@ -20,7 +20,7 @@ jobs:
   movai-base-noetic:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v1
     with:
-      docker_file: docker/noetic/Dockerfile
+      docker_file: noetic/Dockerfile
       docker_image: devops/movai-base-noetic
       public: true
       public_image: ce/movai-base-noetic
@@ -39,7 +39,7 @@ jobs:
   movai-base-bionic:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v1
     with:
-      docker_file: docker/melodic/Dockerfile-rosfree
+      docker_file: melodic/Dockerfile-rosfree
       docker_image: devops/movai-base-bionic
       public: true
       public_image: ce/movai-base-bionic
@@ -58,7 +58,7 @@ jobs:
   movai-base-focal:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v1
     with:
-      docker_file: docker/noetic/Dockerfile-rosfree
+      docker_file: noetic/Dockerfile-rosfree
       docker_image: devops/movai-base-focal
       public: true
       public_image: ce/movai-base-focal
