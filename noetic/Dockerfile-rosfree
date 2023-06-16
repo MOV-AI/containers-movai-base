@@ -42,7 +42,17 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN  echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
     apt-get update && apt-get upgrade -y &&\
     /usr/local/bin/install-packages.sh &&\
-    apt-get clean &&\
+    # Clean apt
+    apt-get autoremove -y && \
+    apt-get clean -y > /dev/null && \
+    # Clean pip temp files
+    /usr/bin/python3 -m pip install pyclean && \
+    # Remove __pycache__ folders
+    /usr/bin/python3 -m pyclean /usr/ /opt/ && \
+    # Remove apt cache and tmp files
+    python3 -c "import glob, shutil, os; \
+[shutil.rmtree(d) for pattern in ['/var/lib/apt/lists/*', '/tmp/*', '/var/cache/apt/*'] \
+    for d in glob.glob(pattern) if os.path.isdir(d)]" && \
     rm -rf /var/lib/apt/lists/* &&\
     rm -rf /var/log/*
 
