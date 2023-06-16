@@ -41,13 +41,24 @@ COPY $ROS_VERSION/packages.apt /tmp/packages.apt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
     #apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key "${ROS_GPG_KEY}" &&\
+    sed -e 's#http://archive\|http://security#mirror://mirrors#g' -e 's/\/ubuntu\//\/mirrors.txt/' -i /etc/apt/sources.list &&\
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
     apt-get update && apt-get upgrade -y && apt-get install -y curl --no-install-recommends &&\
     curl -fsSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | gpg --dearmor -o /usr/share/keyrings/ros.key &&\
     echo "deb [signed-by=/usr/share/keyrings/ros.key] https://artifacts.aws.cloud.mov.ai/repository/ppa-proxy-ros focal main" | tee /etc/apt/sources.list.d/movai-ros.list > /dev/null &&\
     apt-get update && apt-get upgrade -y &&\
     /usr/local/bin/install-packages.sh &&\
-    apt-get clean &&\
+    # Clean apt
+    apt-get autoremove -y && \
+    apt-get clean -y > /dev/null && \
+    # Clean pip temp files
+    /usr/bin/python3 -m pip install pyclean && \
+    # Remove __pycache__ folders
+    /usr/bin/python3 -m pyclean /usr/ /opt/ && \
+    # Remove apt cache and tmp files
+    python3 -c "import glob, shutil, os; \
+[shutil.rmtree(d) for pattern in ['/var/lib/apt/lists/*', '/tmp/*', '/var/cache/apt/*'] \
+    for d in glob.glob(pattern) if os.path.isdir(d)]" && \
     rm -rf /var/lib/apt/lists/* &&\
     rm -rf /var/log/*
 
