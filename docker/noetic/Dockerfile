@@ -55,10 +55,8 @@ RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
     /usr/bin/python3 -m pyclean /usr/ /opt/ && \
     # Remove apt cache and tmp files
     python3 -c "import glob, shutil, os; \
-[shutil.rmtree(d) for pattern in ['/var/lib/apt/lists/*', '/tmp/*', '/var/cache/apt/*'] \
-    for d in glob.glob(pattern) if os.path.isdir(d)]" && \
-    rm -rf /var/lib/apt/lists/* &&\
-    rm -rf /var/log/*
+[shutil.rmtree(d) for pattern in ['/var/lib/apt/lists/*', '/tmp/*', '/var/cache/apt/*', '/var/log/*'] \
+    for d in glob.glob(pattern) if os.path.isdir(d)]"
 
 # Run user provision
 COPY files/user.rc /tmp/user.rc
