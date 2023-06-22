@@ -43,13 +43,35 @@ RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
     apt-get update && apt-get upgrade -y && apt-get install -y curl --no-install-recommends &&\
     curl -fsSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | gpg --dearmor -o /usr/share/keyrings/ros.key &&\
+    #echo /usr/share/ubuntu-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/ubuntu-archive.key && \
     echo "deb [signed-by=/usr/share/keyrings/ros.key] https://artifacts.aws.cloud.mov.ai/repository/ppa-proxy-ros focal main" | tee /etc/apt/sources.list.d/movai-ros.list > /dev/null &&\
+    sed -e 's#deb http://archive#\#deb http://archive#g' -i /etc/apt/sources.list &&\
+    sed -e 's#deb http://security#\#deb http://security#g' -i /etc/apt/sources.list &&\
+    # Add focal proxy
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal focal universe" >> /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list &&\
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal focal multiverse" >> /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list &&\
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal focal main" >> /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list &&\
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal focal restricted" >> /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list &&\
+    # Add focal-updates proxy
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal-updates focal-updates universe" >> /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list &&\
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal-updates focal-updates multiverse" >> /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list &&\
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal-updates focal-updates main" >> /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list &&\
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal-updates focal-updates restricted" >> /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list &&\
+    # Add focal-backports proxy
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal-backports focal-backports universe" >> /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list &&\
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal-backports focal-backports multiverse" >> /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list &&\
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal-backports focal-backports main" >> /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list &&\
+    # Add focal security proxy
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-security-focal focal-security main restricted" >> /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list &&\
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-security-focal focal-security universe" >> /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list &&\
+    echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-security-focal focal-security multiverse" >> /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list &&\
+    sudo apt update &&\
     /usr/local/bin/install-packages.sh &&\
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* &&\
     rm -rf /var/log/*
 
-# Run user provision
+# # Run user provision
 COPY files/user.rc /tmp/user.rc
 RUN /usr/local/bin/user-provision.sh
 
