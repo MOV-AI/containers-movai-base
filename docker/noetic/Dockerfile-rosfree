@@ -51,9 +51,8 @@ COPY files/apt/movai-ubuntu-ports-proxy.list /etc/apt/sources.list.d/movai-ubunt
 COPY files/apt/movai-ubuntu-security-proxy.list /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN sed -e 's#deb http://archive#\#deb http://archive#g' -i /etc/apt/sources.list &&\
-    sed -e 's#deb http://security#\#deb http://security#g' -i /etc/apt/sources.list &&\
-    sed -e 's#deb http://ports.ubuntu#\#deb http://ports.ubuntu#g' -i /etc/apt/sources.list &&\
+RUN mv /etc/apt/sources.list /etc/apt/sources.list.bck &&\
+    touch /etc/apt/sources.list &&\
     curl -fsSL $APT_REPOSITORY/movai-applications/gpg | apt-key add -  &&\
     if [ "$(uname -m)" = "x86_64" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list ; fi &&\ 
     if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-archive* && rm /etc/apt/sources.list.d/movai-ubuntu-security* ; fi &&\ 
