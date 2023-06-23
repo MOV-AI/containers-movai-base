@@ -42,7 +42,7 @@ COPY docker/$ROS_VERSION/packages.apt /tmp/packages.apt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN  echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
     apt update &&\
-    apt install -y curl gnupg &&\
+    apt-get install -y curl gnupg &&\
     sed -e 's#deb http://archive#\#deb http://archive#g' -i /etc/apt/sources.list &&\
     sed -e 's#deb http://security#\#deb http://security#g' -i /etc/apt/sources.list &&\
     curl -fsSL $APT_REPOSITORY/movai-applications/gpg | apt-key add -  &&\

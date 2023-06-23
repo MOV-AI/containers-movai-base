@@ -65,7 +65,7 @@ RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
     echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-security-focal focal-security main restricted" >> /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list &&\
     echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-security-focal focal-security universe" >> /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list &&\
     echo "deb https://artifacts.aws.cloud.mov.ai/repository/ppa-security-focal focal-security multiverse" >> /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list &&\
-    sudo apt update &&\
+    apt-get update &&\
     /usr/local/bin/install-packages.sh &&\
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* &&\
