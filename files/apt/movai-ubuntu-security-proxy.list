@@ -1,0 +1,4 @@
+# Add focal security proxy
+deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-security-focal focal-security main restricted
+deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-security-focal focal-security universe
+deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-security-focal focal-security multiverse

@@ -9,6 +9,7 @@ LABEL maintainer="devops@mov.ai"
 ARG USER_ID=1000
 ARG ROS_VERSION="noetic"
 ARG HEALTH_NODE_URL="http://health-node:8081"
+ARG APT_REPOSITORY="https://artifacts.aws.cloud.mov.ai/repository"
 
 ### Environment config
 ENV MOVAI_HOME="/opt/mov.ai" \
@@ -37,13 +38,28 @@ COPY files/movai-entrypoint.sh /usr/local/bin/movai-entrypoint.sh
 # Install base packages
 COPY files/packages.bash /tmp/packages.bash
 COPY docker/$ROS_VERSION/packages.apt /tmp/packages.apt
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+# Install requirements for ppa certificates registration
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
+    apt update &&\
+    apt-get install -y curl gnupg --no-install-recommends
+
+COPY files/apt/movai-ubuntu-archive-proxy.list /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list
+COPY files/apt/movai-ubuntu-ports-proxy.list /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list
+COPY files/apt/movai-ubuntu-security-proxy.list /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
-    apt-get update && apt-get upgrade -y && apt-get install -y curl --no-install-recommends &&\
     curl -fsSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | gpg --dearmor -o /usr/share/keyrings/ros.key &&\
     echo "deb [signed-by=/usr/share/keyrings/ros.key] https://artifacts.aws.cloud.mov.ai/repository/ppa-proxy-ros focal main" | tee /etc/apt/sources.list.d/movai-ros.list > /dev/null &&\
+    mv /etc/apt/sources.list /etc/apt/sources.list.bck &&\
+    touch /etc/apt/sources.list &&\
+    curl -fsSL $APT_REPOSITORY/movai-applications/gpg | apt-key add -  &&\
+    if [ "$(uname -m)" = "x86_64" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list ; fi &&\ 
+    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-archive* && rm /etc/apt/sources.list.d/movai-ubuntu-security* ; fi &&\ 
+    apt-get update && apt-get upgrade -y &&\
     /usr/local/bin/install-packages.sh &&\
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* &&\
