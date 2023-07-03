@@ -20,6 +20,11 @@ set -eo pipefail
 # Install apt dependencies
 
 PACKAGE_FILE=/tmp/packages.apt
+PACKAGES_SCRIPT=/tmp/packages.bash
+
+# If there is a package script, install packages then clean up
+[ -f ${PACKAGES_SCRIPT} ] && { chmod 700 ${PACKAGES_SCRIPT}; ${PACKAGES_SCRIPT}; rm --preserve-root ${PACKAGES_SCRIPT}; }
+
 
 # If there is a package definition file, install packages then clean up
 if [ -f ${PACKAGE_FILE} ]; then
@@ -45,12 +50,6 @@ PIP_REQUIREMENTS=/tmp/requirements.txt
     python3 -m pip install --upgrade -r ${PIP_REQUIREMENTS};
     rm --preserve-root ${PIP_REQUIREMENTS};
 }
-
-PACKAGES_SCRIPT=/tmp/packages.bash
-
-# If there is a package script, install packages then clean up
-[ -f ${PACKAGES_SCRIPT} ] && { chmod 700 ${PACKAGES_SCRIPT}; ${PACKAGES_SCRIPT}; rm --preserve-root ${PACKAGES_SCRIPT}; }
-
 
 printf "Cleaning up ...\n"
 rm -rf /tmp/*
