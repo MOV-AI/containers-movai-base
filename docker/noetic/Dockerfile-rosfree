@@ -8,8 +8,8 @@ LABEL maintainer="devops@mov.ai"
 # Arguments
 ARG USER_ID=1000
 ARG HEALTH_NODE_URL="http://health-node:8081"
-### Environment config
 ARG APT_REPOSITORY="https://artifacts.aws.cloud.mov.ai/repository"
+
 ### Environment config
 ENV MOVAI_HOME="/opt/mov.ai" \
     ROS_VERSION="noetic" \
@@ -35,7 +35,6 @@ COPY --chown=movai:movai files/deploy.sh /usr/local/bin/deploy.sh
 # Copy startup files
 COPY files/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY files/movai-entrypoint.sh /usr/local/bin/movai-entrypoint.sh
-
 
 COPY files/packages.bash /tmp/packages.bash
 COPY docker/$ROS_VERSION/packages.apt /tmp/packages.apt

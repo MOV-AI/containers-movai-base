@@ -9,8 +9,8 @@ LABEL maintainer="devops@mov.ai"
 ARG USER_ID=1000
 ARG ROS_VERSION="noetic"
 ARG HEALTH_NODE_URL="http://health-node:8081"
-### Environment config
 ARG APT_REPOSITORY="https://artifacts.aws.cloud.mov.ai/repository"
+
 ### Environment config
 ENV MOVAI_HOME="/opt/mov.ai" \
     ROS_VERSION="$ROS_VERSION"
@@ -65,7 +65,7 @@ RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
     rm -rf /var/lib/apt/lists/* &&\
     rm -rf /var/log/*
 
-# # Run user provision
+# Run user provision
 COPY files/user.rc /tmp/user.rc
 RUN /usr/local/bin/user-provision.sh
 
