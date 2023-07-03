@@ -43,7 +43,7 @@ COPY docker/$ROS_VERSION/packages.apt /tmp/packages.apt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
     apt update &&\
-    apt-get install -y curl gnupg
+    apt-get install -y curl gnupg --no-install-recommends
 
 COPY files/apt/movai-ubuntu-archive-proxy.list /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list
 COPY files/apt/movai-ubuntu-ports-proxy.list /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list
