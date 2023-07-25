@@ -24,9 +24,7 @@ jobs:
       docker_image: devops/movai-base-noetic
       public: true
       public_image: ce/movai-base-noetic
-      github_ref: ${{ github.ref }}
       deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
-      version: ${GITHUB_REF##*/}
       push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
       snyk_check: true
       platforms: linux/amd64, linux/arm/v7, linux/arm64
@@ -35,6 +33,8 @@ jobs:
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
       pub_registry_user: ${{ secrets.PORTUS_APP_USER }}
       pub_registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
+      github_registry_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
+      github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
       snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-bionic:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
@@ -43,9 +43,7 @@ jobs:
       docker_image: devops/movai-base-bionic
       public: true
       public_image: ce/movai-base-bionic
-      github_ref: ${{ github.ref }}
       deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
-      version: ${GITHUB_REF##*/}
       push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
       snyk_check: true
       platforms: linux/amd64, linux/arm/v7, linux/arm64
@@ -54,6 +52,8 @@ jobs:
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
       pub_registry_user: ${{ secrets.PORTUS_APP_USER }}
       pub_registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
+      github_registry_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
+      github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
       snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-focal:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
@@ -62,9 +62,7 @@ jobs:
       docker_image: devops/movai-base-focal
       public: true
       public_image: ce/movai-base-focal
-      github_ref: ${{ github.ref }}
       deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
-      version: ${GITHUB_REF##*/}
       push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
       snyk_check: true
       platforms: linux/amd64, linux/arm/v7, linux/arm64
@@ -73,4 +71,6 @@ jobs:
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
       pub_registry_user: ${{ secrets.PORTUS_APP_USER }}
       pub_registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
+      github_registry_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
+      github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
       snyk_token: ${{ secrets.SNYK_TOKEN }}
