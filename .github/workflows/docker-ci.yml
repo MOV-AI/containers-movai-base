@@ -25,6 +25,7 @@ jobs:
       public: true
       public_image: ce/movai-base-noetic
       deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
+      version: ${GITHUB_REF##*/}
       push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
       snyk_check: true
       platforms: linux/amd64, linux/arm/v7, linux/arm64
@@ -44,6 +45,7 @@ jobs:
       public: true
       public_image: ce/movai-base-bionic
       deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
+      version: ${GITHUB_REF##*/}
       push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
       snyk_check: true
       platforms: linux/amd64, linux/arm/v7, linux/arm64
@@ -63,6 +65,7 @@ jobs:
       public: true
       public_image: ce/movai-base-focal
       deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
+      version: ${GITHUB_REF##*/}
       push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
       snyk_check: true
       platforms: linux/amd64, linux/arm/v7, linux/arm64
