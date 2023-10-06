@@ -31,3 +31,15 @@ touch /etc/sudoers.d/movai
 for SUDO_COMMAND in ${SUDO_COMMANDS[@]}; do
     echo "%sudo ALL=(ALL) NOPASSWD:SETENV: ${SUDO_COMMAND}" >> /etc/sudoers.d/movai
 done
+
+{
+    echo "Package: *" 
+    echo "Pin: origin artifacts.cloud.mov.ai"
+    echo "Pin-Priority: 1001" 
+} >> /etc/apt/preferences.d/movai
+
+{
+    echo "Package: *"
+    echo "Pin: origin artifacts.aws.cloud.mov.ai"
+    echo "Pin-Priority: 1001"
+}  >> /etc/apt/preferences.d/movai-ros

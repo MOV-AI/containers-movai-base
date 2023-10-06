@@ -35,11 +35,21 @@ COPY --chown=movai:movai files/deploy.sh /usr/local/bin/deploy.sh
 COPY files/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY files/movai-entrypoint.sh /usr/local/bin/movai-entrypoint.sh
 
+COPY files/apt/movai-ubuntu-archive-proxy.list /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list
+COPY files/apt/movai-ubuntu-ports-proxy.list /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list
+COPY files/apt/movai-ubuntu-security-proxy.list /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list
+
+
 # Install base packages
 COPY files/packages.bash /tmp/packages.bash
 COPY $ROS_VERSION/packages.apt /tmp/packages.apt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN  echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
+    mv /etc/apt/sources.list /etc/apt/sources.list.bck &&\
+    touch /etc/apt/sources.list &&\
+    curl -fsSL $APT_REPOSITORY/movai-applications/gpg | apt-key add -  &&\
+    if [ "$(uname -m)" = "x86_64" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list ; fi &&\ 
+    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-archive* && rm /etc/apt/sources.list.d/movai-ubuntu-security* ; fi &&\ 
     apt-get update && apt-get upgrade -y &&\
     /usr/local/bin/install-packages.sh &&\
     # Clean apt
