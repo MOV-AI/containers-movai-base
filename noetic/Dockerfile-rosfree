@@ -9,6 +9,8 @@ LABEL maintainer="devops@mov.ai"
 ARG USER_ID=1000
 ARG HEALTH_NODE_URL="http://health-node:8081"
 
+ARG APT_REPOSITORY="https://artifacts.aws.cloud.mov.ai/repository"
+
 ### Environment config
 ENV MOVAI_HOME="/opt/mov.ai" \
     ROS_VERSION="noetic" \
