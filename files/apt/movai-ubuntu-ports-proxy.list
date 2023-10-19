@@ -16,3 +16,5 @@ deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-f
 deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-focal-security focal-security multiverse
 deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-focal-security focal-security universe
 deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-focal-security focal-security restricted
+# Add backup of focal-ports
+deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-focal-backup portsfocal-backup main
