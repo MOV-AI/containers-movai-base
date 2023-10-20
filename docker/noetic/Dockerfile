@@ -48,12 +48,12 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 COPY files/apt/movai-ubuntu-archive-proxy.list /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list
 COPY files/apt/movai-ubuntu-ports-proxy.list /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list
 COPY files/apt/movai-ubuntu-security-proxy.list /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list
+COPY files/apt/movai-ros-proxy.list /etc/apt/sources.list.d/movai-ros-proxy.list
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
     curl -fsSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | gpg --dearmor -o /usr/share/keyrings/ros.key &&\
-    echo "deb [signed-by=/usr/share/keyrings/ros.key] https://artifacts.aws.cloud.mov.ai/repository/ppa-proxy-ros focal main" | tee /etc/apt/sources.list.d/movai-ros.list > /dev/null &&\
     mv /etc/apt/sources.list /etc/apt/sources.list.bck &&\
     touch /etc/apt/sources.list &&\
     curl -fsSL $APT_REPOSITORY/movai-applications/gpg | apt-key add -  &&\

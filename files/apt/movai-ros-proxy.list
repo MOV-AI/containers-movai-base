@@ -1,0 +1,4 @@
+# Add ROS proxy
+deb [signed-by=/usr/share/keyrings/ros.key] https://artifacts.aws.cloud.mov.ai/repository/ppa-proxy-ros focal main
+#Add ROS proxy backup
+deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-proxy-ros-backup ros-backup main
