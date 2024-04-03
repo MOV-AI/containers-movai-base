@@ -13,4 +13,4 @@ deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal
 deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal-backports focal-backports multiverse
 deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal-backports focal-backports main
 # Add backup of focal-archive
-deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal-backup focal-backup main
+#deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-focal-backup focal-backup main
