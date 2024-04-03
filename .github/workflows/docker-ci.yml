@@ -37,7 +37,6 @@ jobs:
       github_registry_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
       github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
       snyk_token: ${{ secrets.SNYK_TOKEN }}
-  movai-base-bionic:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
     with:
       docker_file: docker/melodic/Dockerfile-rosfree
