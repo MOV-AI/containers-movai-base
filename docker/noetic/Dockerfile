@@ -42,7 +42,7 @@ COPY docker/$ROS_VERSION/packages.apt /tmp/packages.apt
 # Install requirements for ppa certificates registration
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
-    apt-get update || apt-get install -y --no-install-recommends curl gnupg
+    apt-get update ; apt-get install -y --no-install-recommends curl gnupg
 
 COPY files/apt/movai-ubuntu-archive-proxy.list /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list
 COPY files/apt/movai-ubuntu-ports-proxy.list /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list
