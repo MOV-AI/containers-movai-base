@@ -18,6 +18,7 @@
 set -e
 
 # Create link to allow other applications to print to docker stdout
+mkdir -p "${APP_LOGS}"
 ln -sf /proc/1/fd/1 "${APP_LOGS}"/stdout
 
 [ -f "${MOVAI_HOME}"/.welcome ] && cat "${MOVAI_HOME}"/.welcome
