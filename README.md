@@ -39,7 +39,11 @@ Build MOVAI image based on Ubuntu 18.04 :
 
 Build MOVAI image based on Ubuntu 20.04 :
 
-    docker build -t movai-base:focal -f docker/noetic/Dockerfile-rosfree .
+    docker build -t movai-base:focal --target base -f docker/noetic/Dockerfile-rosfree .
+
+Build MOVAI image based on Ubuntu 20.04 with Python 3.10 :
+
+    docker build -t movai-base:focal --target rosfree-python310 -f docker/noetic/Dockerfile-rosfree .
 
 ## Build for multi-arch
 

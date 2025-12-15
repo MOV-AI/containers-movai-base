@@ -1,5 +1,5 @@
 # This Dockerfile is the base image for Mov.ai - Based on Ubuntu 20.04
-FROM ubuntu:20.04
+FROM ubuntu:20.04 AS base
 
 # Labels
 LABEL description="MOV.AI Base Image"
@@ -53,8 +53,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN mv /etc/apt/sources.list /etc/apt/sources.list.bck &&\
     touch /etc/apt/sources.list &&\
     curl -fsSL $APT_REPOSITORY/movai-applications/gpg | apt-key add -  &&\
-    if [ "$(uname -m)" = "x86_64" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list ; fi &&\ 
-    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-archive* && rm /etc/apt/sources.list.d/movai-ubuntu-security* ; fi &&\ 
+    if [ "$(uname -m)" = "x86_64" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list ; fi &&\
+    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-archive* && rm /etc/apt/sources.list.d/movai-ubuntu-security* ; fi &&\
     apt-get update && apt-get upgrade -y &&\
     /usr/local/bin/install-packages.sh &&\
     apt-get clean &&\
@@ -68,3 +68,73 @@ RUN /usr/local/bin/user-provision.sh
 SHELL ["/bin/bash", "-c"]
 WORKDIR ${APP_PATH}
 ENTRYPOINT [ "docker-entrypoint.sh" ]
+
+FROM base AS rosfree-python310
+ENV PYTHON_VERSION=3.10.19
+
+USER root
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+		dpkg-dev \
+		gcc \
+		gnupg \
+		libbluetooth-dev \
+		libbz2-dev \
+		libc6-dev \
+		libdb-dev \
+		libffi-dev \
+		libgdbm-dev \
+		liblzma-dev \
+		libncursesw5-dev \
+		libreadline-dev \
+		libsqlite3-dev \
+		libssl-dev \
+		make \
+		tk-dev \
+		uuid-dev \
+		wget \
+		xz-utils \
+		zlib1g-dev \
+	; \
+    wget --progress=dot:giga https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz && \
+    tar xzf Python-${PYTHON_VERSION}.tgz && \
+    cd Python-${PYTHON_VERSION} && \
+    gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
+	./configure \
+		--build="$gnuArch" \
+		--enable-loadable-sqlite-extensions \
+		--enable-optimizations \
+		--enable-option-checking=fatal \
+		--enable-shared \
+		--with-lto \
+		--with-system-expat \
+		--without-ensurepip \
+	; \
+	nproc="$(nproc)"; \
+	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
+	LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
+	LDFLAGS="${LDFLAGS:--Wl},--strip-all"; \
+	make -j "$nproc" \
+		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
+		"LDFLAGS=${LDFLAGS:-}" \
+	; \
+# https://github.com/docker-library/python/issues/784
+# prevent accidental usage of a system installed libpython of the same version
+	rm python; \
+	make -j "$nproc" \
+		"EXTRA_CFLAGS=${EXTRA_CFLAGS:-}" \
+		"LDFLAGS=${LDFLAGS:--Wl},-rpath='\$\$ORIGIN/../lib'" \
+		python \
+	; \
+    make altinstall && \
+    # Remove __pycache__, .a files, test dirs
+    rm -rf ../Python-${PYTHON_VERSION}* && \
+    find /usr/local -depth \
+		\( \
+			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
+			-o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name 'libpython*.a' \) \) \
+		\) -exec rm -rf '{}' + \
+	;
+
+USER movai
