@@ -4,14 +4,27 @@
 
 Base Docker image of MOV.AI Framework
 
-Image is built in 4 flavours:
+Image is built in 6 active flavours:
 
 | Flavour      | Base Image | Python |
 | ------------ | ---------- | ------ |
-| movai-base-melodic | ros:melodic-robot | 3.6.9 |
 | movai-base-noetic | ros:noetic-robot | 3.8.10 |
-| movai-base-bionic | ubuntu:18.04 | 3.6.9 |
 | movai-base-focal | ubuntu:20.04 | 3.8.10 |
+| movai-base-humble | ros:humble-ros-base | 3.10 |
+| movai-base-humble-python38 | ros:humble-ros-base | 3.8.18 |
+| movai-base-jammy | ubuntu:22.04 | 3.10 |
+| movai-base-jammy-python38 | ubuntu:22.04 | 3.8 |
+
+## Deprecated Flavours
+
+⚠️ **These flavours are deprecated and will be removed in a future release. Please migrate to supported alternatives.**
+
+| Flavour      | Base Image | Python | Migration Path |
+| ------------ | ---------- | ------ | -------------- |
+| movai-base-melodic | ros:melodic-robot | 3.6.9 | Use `movai-base-noetic` |
+| movai-base-bionic | ubuntu:18.04 | 3.6.9 | Use `movai-base-focal` |
+
+Build and test functionality is maintained for deprecated flavours, but they are excluded from CI/CD and documentation.
 
 ## Usage
 
@@ -23,19 +36,17 @@ The images come with some handy scripts which can be launched on startup if some
 
 Examples :
 
-    docker run --name base -u movai -e APT_AUTOINSTALL=once -e APT_KEYS_URL_LIST="https://download.docker.com/linux/ubuntu/gpg,https://apt.releases.hashicorp.com/gpg" -e APT_REPOS_LIST='deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable,deb [arch=amd64] https://apt.releases.hashicorp.com bionic main' -e APT_INSTALL_LIST='docker-ce,terraform' movai-base:melodic
-
     docker run --name base -d -u movai -e APT_AUTOINSTALL=once -e APT_KEYS_URL_LIST="https://download.docker.com/linux/ubuntu/gpg,https://apt.releases.hashicorp.com/gpg" -e APT_REPOS_LIST='deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable,deb [arch=amd64] https://apt.releases.hashicorp.com focal main' -e APT_INSTALL_LIST='docker-ce,terraform' movai-base:noetic
+
+    docker run --name base -d -u movai -e APT_AUTOINSTALL=once -e APT_KEYS_URL_LIST="https://download.docker.com/linux/ubuntu/gpg,https://apt.releases.hashicorp.com/gpg" -e APT_REPOS_LIST='deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable,deb [arch=amd64] https://apt.releases.hashicorp.com jammy main' -e APT_INSTALL_LIST='docker-ce,terraform' movai-base:humble
+
+    docker run --name base -d -u movai -e APT_AUTOINSTALL=once -e APT_KEYS_URL_LIST="https://download.docker.com/linux/ubuntu/gpg,https://apt.releases.hashicorp.com/gpg" -e APT_REPOS_LIST='deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable,deb [arch=amd64] https://apt.releases.hashicorp.com jammy main' -e APT_INSTALL_LIST='docker-ce,terraform' movai-base:humble-python38
 
 ## Build
 
 Build MOVAI image based on ROS noetic :
 
     docker build -t movai-base:noetic -f docker/noetic/Dockerfile .
-
-Build MOVAI image based on Ubuntu 18.04 :
-
-    docker build -t movai-base:bionic -f docker/melodic/Dockerfile-rosfree .
 
 Build MOVAI image based on Ubuntu 20.04 :
 
@@ -45,6 +56,30 @@ Build MOVAI image based on Ubuntu 20.04 with Python 3.10 :
 
     docker build -t movai-base:focal --target rosfree-python310 -f docker/noetic/Dockerfile-rosfree .
 
+Build MOVAI image based on ROS2 Humble :
+
+    docker build -t movai-base:humble -f docker/humble/Dockerfile .
+
+Build MOVAI image based on ROS2 Humble with Python 3.8 :
+
+    docker build -t movai-base:humble-python38 --target humble-python38 -f docker/humble/Dockerfile .
+
+Build MOVAI image based on Ubuntu 22.04 :
+
+    docker build -t movai-base:jammy --target base -f docker/humble/Dockerfile-rosfree .
+
+Build MOVAI image based on Ubuntu 22.04 with Python 3.8 :
+
+    docker build -t movai-base:jammy --target jammy-python38 -f docker/humble/Dockerfile-rosfree .
+
+### Deprecated Build Examples
+
+⚠️ **These examples are for deprecated flavours. Build functionality is maintained but not recommended for new projects.**
+
+Build MOVAI image based on Ubuntu 18.04 (deprecated) :
+
+    docker build -t movai-base:bionic -f docker/melodic/Dockerfile-rosfree .
+
 ## Build for multi-arch
 
     docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
@@ -53,8 +88,13 @@ Build MOVAI image based on Ubuntu 20.04 with Python 3.10 :
 
     DOCKER_PLATFORMS=linux/amd64,linux/armhf,linux/arm64
     docker buildx build --pull --platform $DOCKER_PLATFORMS -t movai-base:noetic -f docker/noetic/Dockerfile .
+    docker buildx build --pull --platform $DOCKER_PLATFORMS -t movai-base:humble -f docker/humble/Dockerfile .
+    docker buildx build --pull --platform $DOCKER_PLATFORMS -t movai-base:humble-python38 --target humble-python38 -f docker/humble/Dockerfile .
+    docker buildx build --pull --platform $DOCKER_PLATFORMS -t movai-base:jammy --target base -f docker/humble/Dockerfile-rosfree .
+    docker buildx build --pull --platform $DOCKER_PLATFORMS -t movai-base:jammy-python38 --target jammy-python38 -f docker/humble/Dockerfile-rosfree .
 
     docker buildx build --push --pull --platform $DOCKER_PLATFORMS -t registry.aws.cloud.mov.ai/devops/multiarch-movai-base-noetic -f noetic/Dockerfile .
+    docker buildx build --push --pull --platform $DOCKER_PLATFORMS -t registry.aws.cloud.mov.ai/devops/multiarch-movai-base-humble -f docker/humble/Dockerfile .
 
 ## License
 https://www.mov.ai/flow-license/
