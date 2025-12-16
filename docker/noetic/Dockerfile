@@ -41,8 +41,9 @@ COPY docker/$ROS_VERSION/packages.apt /tmp/packages.apt
 
 # Install requirements for ppa certificates registration
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
-    apt-get update ; apt-get install -y --no-install-recommends curl gnupg && \
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
+    apt-get update &&\
+    apt-get install -y curl gnupg ca-certificates --no-install-recommends &&\
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* &&\
     rm -rf /var/log/*
@@ -54,14 +55,16 @@ COPY files/apt/movai-ros-proxy.list /etc/apt/sources.list.d/movai-ros-proxy.list
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
-    echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
     curl -fsSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | gpg --dearmor -o /usr/share/keyrings/ros.key &&\
     apt-key add /usr/share/keyrings/ros.key &&\
     mv /etc/apt/sources.list /etc/apt/sources.list.bck &&\
     touch /etc/apt/sources.list &&\
     curl -fsSL $APT_REPOSITORY/movai-applications/gpg | apt-key add -  &&\
+    # Remove irrelevant source lists based on architecture
     if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list ; fi &&\
     if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-archive* && rm /etc/apt/sources.list.d/movai-ubuntu-security* ; fi &&\
+    # redis-tools is not available for arm architectures
+    if [ "$(uname -m)" != "x86_64" ] ; then sed -i '/redis-tools/d' /tmp/packages.apt ; fi &&\
     apt-get update && apt-get upgrade -y &&\
     /usr/local/bin/install-packages.sh &&\
     apt-get clean &&\
