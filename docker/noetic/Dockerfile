@@ -44,6 +44,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
     apt-get update &&\
     apt-get install -y curl gnupg ca-certificates --no-install-recommends &&\
+    apt-get upgrade -y &&\
+    apt-get autoremove -y &&\
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* &&\
     rm -rf /var/log/*
@@ -60,12 +62,15 @@ RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
     mv /etc/apt/sources.list /etc/apt/sources.list.bck &&\
     touch /etc/apt/sources.list &&\
     curl -fsSL $APT_REPOSITORY/movai-applications/gpg | apt-key add -  &&\
+    #if [ "$(uname -m)" != "x86_64" ] ; then\
     # Remove irrelevant source lists based on architecture
-    if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list ; fi &&\
-    if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-archive* && rm /etc/apt/sources.list.d/movai-ubuntu-security* ; fi &&\
-    # redis-tools is not available for arm architectures
-    if [ "$(uname -m)" != "x86_64" ] ; then sed -i '/redis-tools/d' /tmp/packages.apt ; fi &&\
-    apt-get update && apt-get upgrade -y &&\
+    #rm /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list &&\
+    #rm /etc/apt/sources.list.d/movai-ubuntu-archive* &&\
+    #rm /etc/apt/sources.list.d/movai-ubuntu-security* ;\
+    #redis-tools is not available for arm architectures
+    #sed -i '/redis-tools/d' /tmp/packages.apt ;\
+    #fi &&\
+    apt-get update &&\
     /usr/local/bin/install-packages.sh &&\
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* &&\
