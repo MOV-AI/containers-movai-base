@@ -42,7 +42,10 @@ COPY docker/$ROS_VERSION/packages.apt /tmp/packages.apt
 # Install requirements for ppa certificates registration
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
-    apt-get update ; apt-get install -y --no-install-recommends curl gnupg
+    apt-get update ; apt-get install -y --no-install-recommends curl gnupg && \
+    apt-get clean &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    rm -rf /var/log/*
 
 COPY files/apt/movai-ubuntu-archive-proxy.list /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list
 COPY files/apt/movai-ubuntu-ports-proxy.list /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list
@@ -57,7 +60,7 @@ RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
     mv /etc/apt/sources.list /etc/apt/sources.list.bck &&\
     touch /etc/apt/sources.list &&\
     curl -fsSL $APT_REPOSITORY/movai-applications/gpg | apt-key add -  &&\
-    if [ "$(uname -m)" = "x86_64" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list ; fi &&\
+    if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list ; fi &&\
     if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "armv7l" ] ; then rm /etc/apt/sources.list.d/movai-ubuntu-archive* && rm /etc/apt/sources.list.d/movai-ubuntu-security* ; fi &&\
     apt-get update && apt-get upgrade -y &&\
     /usr/local/bin/install-packages.sh &&\
