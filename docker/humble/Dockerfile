@@ -95,5 +95,3 @@ RUN add-apt-repository "${PPA_REPOSITORY}" && \
     apt-get clean -y > /dev/null && \
     rm -rf /var/cache/apt/* && \
     rm -rf /var/lib/apt/lists/*
-
-USER movai
