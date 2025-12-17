@@ -12,6 +12,7 @@ Image is built in 4 flavours:
 | movai-base-noetic | ros:noetic-robot | 3.8.10 |
 | movai-base-bionic | ubuntu:18.04 | 3.6.9 |
 | movai-base-focal | ubuntu:20.04 | 3.8.10 |
+| movai-base-focal-python310 | ubuntu:20.04 | 3.10.19 |
 
 ## Usage
 
@@ -28,6 +29,8 @@ Examples :
     docker run --name base -d -u movai -e APT_AUTOINSTALL=once -e APT_KEYS_URL_LIST="https://download.docker.com/linux/ubuntu/gpg,https://apt.releases.hashicorp.com/gpg" -e APT_REPOS_LIST='deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable,deb [arch=amd64] https://apt.releases.hashicorp.com focal main' -e APT_INSTALL_LIST='docker-ce,terraform' movai-base:noetic
 
 ## Build
+**Note**: Multi-stage Dockerfiles are provided to build the images, make sure to select the right target.
+
 
 Build MOVAI image based on ROS noetic :
 
@@ -39,7 +42,11 @@ Build MOVAI image based on Ubuntu 18.04 :
 
 Build MOVAI image based on Ubuntu 20.04 :
 
-    docker build -t movai-base:focal -f docker/noetic/Dockerfile-rosfree .
+    docker build -t movai-base:focal --target base -f docker/noetic/Dockerfile-rosfree .
+
+Build MOVAI image based on Ubuntu 20.04 with Python 3.10 :
+
+    docker build -t movai-base:focal-python310 --target rosfree-python310 -f docker/noetic/Dockerfile-rosfree .
 
 ## Build for multi-arch
 
