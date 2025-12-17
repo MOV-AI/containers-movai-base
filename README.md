@@ -12,6 +12,7 @@ Image is built in 4 flavours:
 | movai-base-noetic | ros:noetic-robot | 3.8.10 |
 | movai-base-bionic | ubuntu:18.04 | 3.6.9 |
 | movai-base-focal | ubuntu:20.04 | 3.8.10 |
+| movai-base-focal-python310 | ubuntu:20.04 | 3.10.19 |
 
 ## Usage
 
