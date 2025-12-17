@@ -108,7 +108,7 @@ RUN apt-get update && \
 		xz-utils \
 		zlib1g-dev \
 	; \
-    wget --progress=dot:giga https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz && \
+    wget --no-check-certificate --progress=dot:giga https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz && \
     tar xzf Python-${PYTHON_VERSION}.tgz && \
     cd Python-${PYTHON_VERSION} && \
     gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
