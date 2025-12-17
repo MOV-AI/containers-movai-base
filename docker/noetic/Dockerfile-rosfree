@@ -13,7 +13,8 @@ ARG APT_REPOSITORY="https://artifacts.aws.cloud.mov.ai/repository"
 
 ### Environment config
 ENV MOVAI_HOME="/opt/mov.ai" \
-    ROS_VERSION="$ROS_VERSION"
+    ROS_VERSION="$ROS_VERSION" \
+	ROS_DISTRO="$ROS_VERSION"
 ENV APP_PATH="${MOVAI_HOME}/app" \
     APP_LOGS="${MOVAI_HOME}/logs" \
     APP_UPDATES="${MOVAI_HOME}/updates" \
@@ -158,5 +159,5 @@ COPY --from=rosfree-python310-builder /usr/local/lib/pkgconfig /usr/local/lib/pk
 COPY --from=rosfree-python310-builder /usr/local/lib/libpython3.10.so* /usr/local/lib/
 
 RUN ldconfig && \
-    ln -sf /usr/local/bin/python3.10 /usr/bin/python3 && \
+    update-alternatives --install /usr/bin/python3 python3 /usr/local/bin/python3.10 100 && \
     curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10

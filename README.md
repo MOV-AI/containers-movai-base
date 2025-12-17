@@ -29,6 +29,8 @@ Examples :
     docker run --name base -d -u movai -e APT_AUTOINSTALL=once -e APT_KEYS_URL_LIST="https://download.docker.com/linux/ubuntu/gpg,https://apt.releases.hashicorp.com/gpg" -e APT_REPOS_LIST='deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable,deb [arch=amd64] https://apt.releases.hashicorp.com focal main' -e APT_INSTALL_LIST='docker-ce,terraform' movai-base:noetic
 
 ## Build
+**Note**: Multi-stage Dockerfiles are provided to build the images, make sure to select the right target.
+
 
 Build MOVAI image based on ROS noetic :
 
