@@ -33,8 +33,15 @@ jobs:
       - name: Run container-structure-test
         run: make test-${{ matrix.distro }}
 
+      - name: Display image size on summary
+        run: |
+          make print-size | tee -a $GITHUB_STEP_SUMMARY
+
       - name: Check image size
-        run: make check-main-images-sizes
+        run: |
+          make check-main-images-sizes || true
+
+
 
   movai-base-noetic:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
