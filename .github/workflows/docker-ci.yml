@@ -35,7 +35,7 @@ jobs:
 
       - name: Display image size on summary
         run: |
-          make print-size | tee -a $GITHUB_STEP_SUMMARY
+          make print-sizes | tee -a $GITHUB_STEP_SUMMARY
 
       - name: Check image size
         run: |
