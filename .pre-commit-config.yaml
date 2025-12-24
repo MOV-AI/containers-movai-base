@@ -4,4 +4,4 @@ repos:
     rev: v2.12.0
     hooks:
       - id: hadolint-docker
-        args: ["docker/noetic/Dockerfile", "docker/noetic/Dockerfile-rosfree", "docker/melodic/Dockerfile-rosfree"]
+        args: ["docker/noetic/Dockerfile", "docker/noetic/Dockerfile-rosfree", "docker/humble/Dockerfile", "docker/humble/Dockerfile-rosfree"]

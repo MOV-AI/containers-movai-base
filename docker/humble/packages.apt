@@ -1,4 +1,4 @@
-# MOV.AI base packages
+# MOV.AI base packages for Ubuntu 22.04 (Jammy)
 # tools
 apt-utils
 rsync
@@ -20,7 +20,17 @@ netbase
 openssh-client
 iputils-ping
 # python
+python3.10
 python3-pip
 python3-setuptools
+python3-dev
 # redis
 redis-tools
+# image processing libraries
+libjpeg-dev
+zlib1g-dev
+libpng-dev
+# additional development tools
+build-essential
+cmake
+pkg-config

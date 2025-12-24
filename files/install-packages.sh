@@ -18,13 +18,11 @@
 set -eo pipefail
 
 # Install apt dependencies
-
 PACKAGE_FILE=/tmp/packages.apt
 PACKAGES_SCRIPT=/tmp/packages.bash
 
 # If there is a package script, install packages then clean up
 [ -f ${PACKAGES_SCRIPT} ] && { chmod 700 ${PACKAGES_SCRIPT}; ${PACKAGES_SCRIPT}; rm --preserve-root ${PACKAGES_SCRIPT}; }
-
 
 # If there is a package definition file, install packages then clean up
 if [ -f ${PACKAGE_FILE} ]; then
@@ -34,14 +32,10 @@ if [ -f ${PACKAGE_FILE} ]; then
     printf "APT Packages list: %s\n" "${packages_list}"
     apt-get update
     DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install ${packages_list}
-    apt-get clean -y
     rm --preserve-root ${PACKAGE_FILE}
-    rm -rf /var/cache/apt/*
-    rm -rf /var/lib/apt/lists/*
 fi
 
 # Install custom dependencies and commands
-
 PIP_REQUIREMENTS=/tmp/requirements.txt
 
 # If there is a python requirements script, install packages then clean up
@@ -53,3 +47,8 @@ PIP_REQUIREMENTS=/tmp/requirements.txt
 
 printf "Cleaning up ...\n"
 rm -rf /tmp/*
+apt-get autoclean -y
+apt-get autopurge -y
+rm -rf /var/cache/apt/*
+rm -rf /var/lib/apt/lists/*
+printf "Done.\n"
