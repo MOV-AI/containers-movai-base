@@ -42,7 +42,7 @@ COPY docker/$ROS_VERSION/packages.apt /tmp/packages.apt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
     apt-get update &&\
-    apt-get install -y curl gnupg ca-certificates --no-install-recommends &&\
+    apt-get install -y curl gnupg lsb-release ca-certificates --no-install-recommends &&\
     apt-get upgrade -y &&\
     apt-get autoremove -y &&\
     apt-get clean &&\

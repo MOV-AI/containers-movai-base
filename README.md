@@ -27,13 +27,34 @@ Image is built in 6 active flavours:
 
 Build and test functionality is maintained for deprecated flavours, but they are excluded from CI/CD and documentation.
 
-## Usage
+## Building Images
 
-The images come with some handy scripts which can be launched on startup if some ENV variables are defined:
-- APT_AUTOINSTALL : if set to 'once', the autoinstall will only run once, any other value runs it systematically
-- APT_KEYS_URL_LIST : comma separated list of URLs to be piped into `apt-key add`
-- APT_REPOS_LIST : comma separated list of ppa to be given to `add-apt-repository`
-- APT_INSTALL_LIST : comma separated lsit of packages to be installed via APT
+Build and run shortcuts are available via the `Makefile`. Run `make help` to see all available commands.
+
+Examples:
+
+    make build-noetic
+    make run-noetic
+
+    make build-humble
+    make run-humble
+
+**Notes**:
+- Multi-stage Dockerfiles are provided to build the images, make sure to select the right target.
+
+- Mutli-arch builds are supported via `buildx`. Make sure to have it set up properly before building for multiple architectures.
+
+## Features
+
+- The images create a user `movai` with UID and GID 1000, so it's recommended to run the containers with `-u movai` to avoid permission issues.
+
+- The images come with `sudo` installed and the `movai` user is part of the `sudo` group without password prompt.
+
+- The images come with some handy scripts which can be launched on startup if some ENV variables are defined:
+    - APT_AUTOINSTALL : if set to 'once', the autoinstall will only run once, any other value runs it systematically
+    - APT_KEYS_URL_LIST : comma separated list of URLs to be piped into `apt-key add`
+    - APT_REPOS_LIST : comma separated list of ppa to be given to `add-apt-repository`
+    - APT_INSTALL_LIST : comma separated lsit of packages to be installed via APT
 
 Examples :
 
@@ -43,61 +64,43 @@ Examples :
 
     docker run --name base -d -u movai -e APT_AUTOINSTALL=once -e APT_KEYS_URL_LIST="https://download.docker.com/linux/ubuntu/gpg,https://apt.releases.hashicorp.com/gpg" -e APT_REPOS_LIST='deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable,deb [arch=amd64] https://apt.releases.hashicorp.com jammy main' -e APT_INSTALL_LIST='docker-ce,terraform' movai-base:humble-python38
 
-## Build
-**Note**: Multi-stage Dockerfiles are provided to build the images, make sure to select the right target.
 
+## Testing Images
 
-Build MOVAI image based on ROS noetic :
+MOV.AI base images can be tested using [container-structure-test](https://github.com/GoogleContainerTools/container-structure-test) from GoogleContainerTools. This tool allows you to declaratively verify image contents, file existence, and command outputs.
 
-    docker build -t movai-base:noetic -f docker/noetic/Dockerfile .
+### Install container-structure-test
 
-Build MOVAI image based on Ubuntu 20.04 :
+You can install the binary directly:
 
-    docker build -t movai-base:focal --target base -f docker/noetic/Dockerfile-rosfree .
+```bash
+sudo wget https://github.com/GoogleContainerTools/container-structure-test/releases/latest/download/container-structure-test-linux-amd64 -O /usr/local/bin/container-structure-test
+sudo chmod +x /usr/local/bin/container-structure-test
+```
 
-Build MOVAI image based on Ubuntu 20.04 with Python 3.10 :
+Or run it via Docker (no install required):
 
-    docker build -t movai-base:focal-python310 --target rosfree-python310 -f docker/noetic/Dockerfile-rosfree .
+```bash
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD/tests:/tests" gcr.io/gcp-runtimes/container-structure-test test --image <image> --config /tests/<test-config>.yaml
+```
 
-Build MOVAI image based on ROS2 Humble :
+### Run tests
 
-    docker build -t movai-base:humble -f docker/humble/Dockerfile .
+After building an image, run the corresponding test:
 
-Build MOVAI image based on ROS2 Humble with Python 3.8 :
+```bash
+container-structure-test test --image movai-base:noetic --config tests/test-noetic.yaml
+container-structure-test test --image movai-base:humble --config tests/test-humble.yaml
+```
 
-    docker build -t movai-base:humble-python38 --target humble-python38 -f docker/humble/Dockerfile .
+Or use the Makefile:
 
-Build MOVAI image based on Ubuntu 22.04 :
+```bash
+make test-noetic
+make test-humble
+```
 
-    docker build -t movai-base:jammy --target base -f docker/humble/Dockerfile-rosfree .
-
-Build MOVAI image based on Ubuntu 22.04 with Python 3.8 :
-
-    docker build -t movai-base:jammy --target jammy-python38 -f docker/humble/Dockerfile-rosfree .
-
-### Deprecated Build Examples
-
-⚠️ **These examples are for deprecated flavours. Build functionality is maintained but not recommended for new projects.**
-
-Build MOVAI image based on Ubuntu 18.04 (deprecated) :
-
-    docker build -t movai-base:bionic -f docker/melodic/Dockerfile-rosfree .
-
-## Build for multi-arch
-
-    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-    docker buildx create --name multiarch --driver docker-container --use
-    docker buildx inspect --bootstrap
-
-    DOCKER_PLATFORMS=linux/amd64,linux/armhf,linux/arm64
-    docker buildx build --pull --platform $DOCKER_PLATFORMS -t movai-base:noetic -f docker/noetic/Dockerfile .
-    docker buildx build --pull --platform $DOCKER_PLATFORMS -t movai-base:humble -f docker/humble/Dockerfile .
-    docker buildx build --pull --platform $DOCKER_PLATFORMS -t movai-base:humble-python38 --target humble-python38 -f docker/humble/Dockerfile .
-    docker buildx build --pull --platform $DOCKER_PLATFORMS -t movai-base:jammy --target base -f docker/humble/Dockerfile-rosfree .
-    docker buildx build --pull --platform $DOCKER_PLATFORMS -t movai-base:jammy-python38 --target jammy-python38 -f docker/humble/Dockerfile-rosfree .
-
-    docker buildx build --push --pull --platform $DOCKER_PLATFORMS -t registry.aws.cloud.mov.ai/devops/multiarch-movai-base-noetic -f noetic/Dockerfile .
-    docker buildx build --push --pull --platform $DOCKER_PLATFORMS -t registry.aws.cloud.mov.ai/devops/multiarch-movai-base-humble -f docker/humble/Dockerfile .
+Test configs are located in the `tests/` directory and can be extended for other flavors.
 
 ## License
 https://www.mov.ai/flow-license/

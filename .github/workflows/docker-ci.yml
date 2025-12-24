@@ -1,13 +1,6 @@
 name: "Build&Deploy movai-base images"
-
 on:
-  # Trigger the workflow on push or pull request
-  # but only for the main branch
-  # or on tag of type v*.*.*
   push:
-    branches:
-      - main
-      - dev
     tags:
       - 'v*.*.*'
   pull_request:
@@ -17,8 +10,35 @@ on:
   release:
     types: [released]
 jobs:
+  test-stable-images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro: [noetic, humble, focal, focal-python310, humble-python38]
+    name: "Test movai-base-${{ matrix.distro }} image"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: make build-${{ matrix.distro }}
+
+      - name: Download container-structure-test
+        run: |
+          wget https://github.com/GoogleContainerTools/container-structure-test/releases/latest/download/container-structure-test-linux-amd64 -O /usr/local/bin/container-structure-test
+          chmod +x /usr/local/bin/container-structure-test
+
+      - name: Run container-structure-test
+        run: make test-${{ matrix.distro }}
+
+      - name: Check image size
+        run: make check-main-images-sizes
+
   movai-base-noetic:
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
+    needs: test-stable-images
     with:
       docker_file: docker/noetic/Dockerfile
       docker_image: devops/movai-base-noetic
@@ -38,6 +58,7 @@ jobs:
       github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
       snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-focal:
+    needs: test-stable-images
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
     with:
       docker_file: docker/noetic/Dockerfile-rosfree
@@ -59,6 +80,7 @@ jobs:
       github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
       snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-focal-python310:
+    needs: test-stable-images
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
     with:
       docker_file: docker/noetic/Dockerfile-rosfree
@@ -80,6 +102,7 @@ jobs:
       github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
       snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-humble:
+    needs: test-stable-images
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
     with:
       docker_file: docker/humble/Dockerfile
@@ -100,6 +123,7 @@ jobs:
       github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
       snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-humble-python38:
+    needs: test-stable-images
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
     with:
       docker_file: docker/humble/Dockerfile

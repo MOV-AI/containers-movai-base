@@ -5,6 +5,7 @@
 # Configuration
 REGISTRY ?= movai-base
 DOCKER_PLATFORMS ?= linux/amd64,linux/armhf,linux/arm64
+BUILD_OPTIONS ?= --pull --progress=plain #--no-cache
 
 # Active image tags
 NOETIC_TAG = $(REGISTRY):noetic
@@ -20,7 +21,7 @@ MELODIC_TAG = $(REGISTRY):melodic
 BIONIC_TAG = $(REGISTRY):bionic
 
 # All image tags
-ALL_TAGS = $(NOETIC_TAG) $(FOCAL_TAG) $(HUMBLE_TAG) $(HUMBLE_PYTHON38_TAG) $(JAMMY_TAG) $(JAMMY_PYTHON38_TAG) $(MELODIC_TAG) $(BIONIC_TAG)
+ALL_TAGS = $(NOETIC_TAG) $(HUMBLE_TAG) $(FOCAL_TAG) $(FOCAL_PYTHON310_TAG) $(HUMBLE_PYTHON38_TAG)
 
 .PHONY: help build build-all run test clean setup-multiarch
 .PHONY: build-noetic build-focal build-focal-python310 build-humble build-humble-python38 build-jammy build-jammy-python38
@@ -73,42 +74,42 @@ help:
 build-all: build-noetic build-focal build-focal-python310 build-humble build-humble-python38 build-jammy build-jammy-python38
 build-noetic:
 	@echo "Building MOV.AI Base Noetic (ROS Noetic)..."
-	docker build -t $(NOETIC_TAG) -f docker/noetic/Dockerfile .
+	docker build $(BUILD_OPTIONS) -t $(NOETIC_TAG) -f docker/noetic/Dockerfile .
 
 build-focal:
 	@echo "Building MOV.AI Base Focal (Ubuntu 20.04)..."
-	docker build -t $(FOCAL_TAG) --target base -f docker/noetic/Dockerfile-rosfree .
+	docker build $(BUILD_OPTIONS) -t $(FOCAL_TAG) --target base -f docker/noetic/Dockerfile-rosfree .
 
 build-focal-python310:
 	@echo "Building MOV.AI Base Focal with Python 3.10..."
-	docker build -t $(FOCAL_PYTHON310_TAG) --target rosfree-python310 -f docker/noetic/Dockerfile-rosfree .
+	docker build $(BUILD_OPTIONS) -t $(FOCAL_PYTHON310_TAG) --target rosfree-python310 -f docker/noetic/Dockerfile-rosfree .
 
 build-humble:
 	@echo "Building MOV.AI Base Humble (ROS2 Humble)..."
-	docker build -t $(HUMBLE_TAG) -f docker/humble/Dockerfile .
+	docker build $(BUILD_OPTIONS) -t $(HUMBLE_TAG) -f docker/humble/Dockerfile .
 
 build-humble-python38:
 	@echo "Building MOV.AI Base Humble with Python 3.8..."
-	docker build -t $(HUMBLE_PYTHON38_TAG) --target humble-python38 -f docker/humble/Dockerfile .
+	docker build $(BUILD_OPTIONS) -t $(HUMBLE_PYTHON38_TAG) --target humble-python38 -f docker/humble/Dockerfile .
 
 build-jammy:
 	@echo "Building MOV.AI Base Jammy (Ubuntu 22.04)..."
-	docker build -t $(JAMMY_TAG) --target base -f docker/humble/Dockerfile-rosfree .
+	docker build $(BUILD_OPTIONS) -t $(JAMMY_TAG) --target base -f docker/humble/Dockerfile-rosfree .
 
 build-jammy-python38:
 	@echo "Building MOV.AI Base Jammy with Python 3.8..."
-	docker build -t $(JAMMY_PYTHON38_TAG) --target jammy-python38 -f docker/humble/Dockerfile-rosfree .
+	docker build $(BUILD_OPTIONS) -t $(JAMMY_PYTHON38_TAG) --target jammy-python38 -f docker/humble/Dockerfile-rosfree .
 
 # Deprecated Build targets (maintained for compatibility)
 build-melodic:
 	@echo "⚠️  WARNING: melodic flavor is DEPRECATED. Please migrate to 'noetic'."
 	@echo "Building MOV.AI Base Melodic (ROS Melodic)..."
-	docker build -t $(MELODIC_TAG) -f docker/melodic/Dockerfile-rosfree .
+	docker build $(BUILD_OPTIONS) -t $(MELODIC_TAG) -f docker/melodic/Dockerfile-rosfree .
 
 build-bionic:
 	@echo "⚠️  WARNING: bionic flavor is DEPRECATED. Please migrate to 'focal'."
 	@echo "Building MOV.AI Base Bionic (Ubuntu 18.04)..."
-	docker build -t $(BIONIC_TAG) -f docker/melodic/Dockerfile-rosfree .
+	docker build $(BUILD_OPTIONS) -t $(BIONIC_TAG) -f docker/melodic/Dockerfile-rosfree .
 
 # Run targets - Start interactive containers
 run-melodic: build-melodic
@@ -147,82 +148,32 @@ run-jammy-python38: build-jammy-python38
 	@echo "Starting interactive jammy-python38 container..."
 	docker run --rm -it --user movai $(JAMMY_PYTHON38_TAG) bash
 
+
+# Use container-structure-test for image verification
+CONTAINER_STRUCTURE_TEST ?= container-structure-test
+
 # Test targets - Run verification tests (only active flavors)
 test-all: test-noetic test-focal test-focal-python310 test-humble test-humble-python38 test-jammy test-jammy-python38
 
-test-melodic: build-melodic
-	@echo "Testing melodic image..."
-	@docker run --rm $(MELODIC_TAG) python3 --version | grep -q "Python 3.6" || (echo "❌ Expected Python 3.6" && exit 1)
-	@docker run --rm $(MELODIC_TAG) whoami | grep -q "root" || (echo "❌ Expected root user" && exit 1)
-	@docker run --rm $(MELODIC_TAG) test -d /opt/mov.ai/app -a -d /opt/mov.ai/logs -a -d /opt/mov.ai/updates || (echo "❌ Missing MOV.AI directories" && exit 1)
-	@docker run --rm $(MELODIC_TAG) lsb_release -r | grep -q "18.04" || (echo "❌ Expected Ubuntu 18.04" && exit 1)
-	@echo "✓ Melodic tests passed"
-
 test-noetic: build-noetic
-	@echo "Testing noetic image..."
-	@docker run --rm $(NOETIC_TAG) python3 --version | grep -q "Python 3.8" || (echo "❌ Expected Python 3.8" && exit 1)
-	@docker run --rm $(NOETIC_TAG) whoami | grep -q "root" || (echo "❌ Expected root user" && exit 1)
-	@docker run --rm $(NOETIC_TAG) test -d /opt/mov.ai/app -a -d /opt/mov.ai/logs -a -d /opt/mov.ai/updates || (echo "❌ Missing MOV.AI directories" && exit 1)
-	@echo "✓ Noetic tests passed"
-
-test-bionic: build-bionic
-	@echo "Testing bionic image..."
-	@docker run --rm $(BIONIC_TAG) python3 --version | grep -q "Python 3.6" || (echo "❌ Expected Python 3.6" && exit 1)
-	@docker run --rm $(BIONIC_TAG) whoami | grep -q "root" || (echo "❌ Expected root user" && exit 1)
-	@docker run --rm $(BIONIC_TAG) test -d /opt/mov.ai/app -a -d /opt/mov.ai/logs -a -d /opt/mov.ai/updates || (echo "❌ Missing MOV.AI directories" && exit 1)
-	@docker run --rm $(BIONIC_TAG) lsb_release -r | grep -q "18.04" || (echo "❌ Expected Ubuntu 18.04" && exit 1)
-	@echo "✓ Bionic tests passed"
-
-test-focal: build-focal
-	@echo "Testing focal image..."
-	@docker run --rm $(FOCAL_TAG) python3 --version | grep -q "Python 3.8" || (echo "❌ Expected Python 3.8" && exit 1)
-	@docker run --rm $(FOCAL_TAG) whoami | grep -q "root" || (echo "❌ Expected root user" && exit 1)
-	@docker run --rm $(FOCAL_TAG) test -d /opt/mov.ai/app -a -d /opt/mov.ai/logs -a -d /opt/mov.ai/updates || (echo "❌ Missing MOV.AI directories" && exit 1)
-	@docker run --rm $(FOCAL_TAG) lsb_release -r | grep -q "20.04" || (echo "❌ Expected Ubuntu 20.04" && exit 1)
-	@echo "✓ Focal tests passed"
-
-test-focal-python310: build-focal-python310
-	@echo "Testing focal-python310 image..."
-	@docker run --rm $(FOCAL_PYTHON310_TAG) python3 --version | grep -q "Python 3.10" || (echo "❌ Expected Python 3.10" && exit 1)
-	@docker run --rm $(FOCAL_PYTHON310_TAG) whoami | grep -q "root" || (echo "❌ Expected root user" && exit 1)
-	@docker run --rm $(FOCAL_PYTHON310_TAG) test -d /opt/mov.ai/app -a -d /opt/mov.ai/logs -a -d /opt/mov.ai/updates || (echo "❌ Missing MOV.AI directories" && exit 1)
-	@docker run --rm $(FOCAL_PYTHON310_TAG) lsb_release -r | grep -q "20.04" || (echo "❌ Expected Ubuntu 20.04" && exit 1)
-	@echo "✓ Focal Python 3.10 tests passed"
+	@echo "Testing noetic image with container-structure-test..."
+	@$(CONTAINER_STRUCTURE_TEST) test --image $(NOETIC_TAG) --config tests/test-noetic.yaml
 
 test-humble: build-humble
-	@echo "Testing humble image..."
-	@docker run --rm $(HUMBLE_TAG) python3 --version | grep -q "Python 3.10" || (echo "❌ Expected Python 3.10" && exit 1)
-	@docker run --rm $(HUMBLE_TAG) whoami | grep -q "root" || (echo "❌ Expected root user" && exit 1)
-	@docker run --rm $(HUMBLE_TAG) test -d /opt/mov.ai/app -a -d /opt/mov.ai/logs -a -d /opt/mov.ai/updates || (echo "❌ Missing MOV.AI directories" && exit 1)
-	@docker run --rm $(HUMBLE_TAG) lsb_release -r | grep -q "22.04" || (echo "❌ Expected Ubuntu 22.04" && exit 1)
-	@echo "✓ Humble tests passed"
+	@echo "Testing humble image with container-structure-test..."
+	@$(CONTAINER_STRUCTURE_TEST) test --image $(HUMBLE_TAG) --config tests/test-humble.yaml
 
-test-jammy: build-jammy
-	@echo "Testing jammy image..."
-	@docker run --rm $(JAMMY_TAG) python3 --version | grep -q "Python 3.10" || (echo "❌ Expected Python 3.10" && exit 1)
-	@docker run --rm $(JAMMY_TAG) whoami | grep -q "root" || (echo "❌ Expected root user" && exit 1)
-	@docker run --rm $(JAMMY_TAG) test -d /opt/mov.ai/app -a -d /opt/mov.ai/logs -a -d /opt/mov.ai/updates || (echo "❌ Missing MOV.AI directories" && exit 1)
-	@docker run --rm $(JAMMY_TAG) lsb_release -r | grep -q "22.04" || (echo "❌ Expected Ubuntu 22.04" && exit 1)
-	@echo "✓ Jammy tests passed"
+test-focal: build-focal
+	@echo "Testing focal image with container-structure-test..."
+	@$(CONTAINER_STRUCTURE_TEST) test --image $(FOCAL_TAG) --config tests/test-focal.yaml
+
+test-focal-python310: build-focal-python310
+	@echo "Testing focal-python310 image with container-structure-test..."
+	@$(CONTAINER_STRUCTURE_TEST) test --image $(FOCAL_PYTHON310_TAG) --config tests/test-focal-python310.yaml
 
 test-humble-python38: build-humble-python38
-	@echo "Testing humble-python38 image..."
-	@docker run --rm $(HUMBLE_PYTHON38_TAG) python3 --version | grep -q "Python 3.8" || (echo "❌ Expected Python 3.8" && exit 1)
-	@docker run --rm $(HUMBLE_PYTHON38_TAG) whoami | grep -q "root" || (echo "❌ Expected root user" && exit 1)
-	@docker run --rm $(HUMBLE_PYTHON38_TAG) test -d /opt/mov.ai/app -a -d /opt/mov.ai/logs -a -d /opt/mov.ai/updates || (echo "❌ Missing MOV.AI directories" && exit 1)
-	@docker run --rm $(HUMBLE_PYTHON38_TAG) lsb_release -r | grep -q "22.04" || (echo "❌ Expected Ubuntu 22.04" && exit 1)
-	@docker run --rm $(HUMBLE_PYTHON38_TAG) python3 -m pip --version | grep -q "pip" || (echo "❌ pip not available" && exit 1)
-	@echo "✓ Humble Python 3.8 tests passed"
-
-test-jammy-python38: build-jammy-python38
-	@echo "Testing jammy-python38 image..."
-	@docker run --rm $(JAMMY_PYTHON38_TAG) python3 --version | grep -q "Python 3.8" || (echo "❌ Expected Python 3.8" && exit 1)
-	@docker run --rm $(JAMMY_PYTHON38_TAG) which python3 | grep -q "/usr/local/bin/python3.8" || (echo "❌ Python not in expected location" && exit 1)
-	@docker run --rm $(JAMMY_PYTHON38_TAG) whoami | grep -q "movai" || (echo "❌ Expected movai user" && exit 1)
-	@docker run --rm $(JAMMY_PYTHON38_TAG) test -d /opt/mov.ai/app -a -d /opt/mov.ai/logs -a -d /opt/mov.ai/updates || (echo "❌ Missing MOV.AI directories" && exit 1)
-	@docker run --rm $(JAMMY_PYTHON38_TAG) lsb_release -r | grep -q "22.04" || (echo "❌ Expected Ubuntu 22.04" && exit 1)
-	@docker run --rm $(JAMMY_PYTHON38_TAG) python3 -m pip --version | grep -q "pip" || (echo "❌ pip not available" && exit 1)
-	@echo "✓ Jammy Python 3.8 tests passed"
+	@echo "Testing humble-python38 image with container-structure-test..."
+	@$(CONTAINER_STRUCTURE_TEST) test --image $(HUMBLE_PYTHON38_TAG) --config tests/test-humble-python38.yaml
 
 # Multi-architecture build setup
 setup-multiarch:
@@ -256,6 +207,28 @@ push-all: setup-multiarch
 	docker buildx build --push --pull --platform $(DOCKER_PLATFORMS) -t $(JAMMY_PYTHON38_TAG) --target jammy-python38 -f docker/humble/Dockerfile-rosfree .
 	docker buildx build --push --pull --platform $(DOCKER_PLATFORMS) -t $(MELODIC_TAG) -f docker/melodic/Dockerfile-rosfree .
 	docker buildx build --push --pull --platform $(DOCKER_PLATFORMS) -t $(BIONIC_TAG) -f docker/melodic/Dockerfile-rosfree .
+
+print-sizes:
+	@echo "images sizes:"
+	docker images $(REGISTRY) --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+
+check-main-images-sizes:
+	@MAX_SIZE_MB=1250; \
+	for tag in $(ALL_TAGS); do \
+		size=$$(docker images $$tag --format "{{.Size}}" | sed 's/MB//;s/GB/*1024/' | bc); \
+		if [ -z "$$size" ]; then \
+			echo "Image $$tag does not exist. Skipping size check."; \
+			continue; \
+		fi; \
+		echo "Checking image:$$tag, size:$$size MB < $$MAX_SIZE_MB MB"; \
+		awk_result=$$(awk -v s="$$size" -v m="$$MAX_SIZE_MB" 'BEGIN {if (s > m) exit 1; else exit 0}'); \
+		if [ $$? -ne 0 ]; then \
+			echo "Error: Image $$tag size $${size}MB exceeds limit of $${MAX_SIZE_MB}MB"; \
+			exit 1; \
+		else \
+			echo "Image $$tag size $${size}MB is within limit."; \
+		fi \
+	done
 
 # Clean up built images
 clean:

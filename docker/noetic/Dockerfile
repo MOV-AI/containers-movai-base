@@ -8,7 +8,6 @@ LABEL maintainer="devops@mov.ai"
 # Arguments
 ARG USER_ID=1000
 ARG ROS_VERSION="noetic"
-ARG HEALTH_NODE_URL="http://health-node:8081"
 ARG APT_REPOSITORY="https://artifacts.aws.cloud.mov.ai/repository"
 
 ### Environment config
@@ -17,7 +16,6 @@ ENV MOVAI_HOME="/opt/mov.ai" \
 ENV APP_PATH="${MOVAI_HOME}/app" \
     APP_LOGS="${MOVAI_HOME}/logs" \
     APP_UPDATES="${MOVAI_HOME}/updates" \
-    LOG_HTTP_HOST="${HEALTH_NODE_URL}" \
     USER_ID=${USER_ID}
 
 # Create Default User and copy default settings
@@ -43,7 +41,7 @@ COPY docker/$ROS_VERSION/packages.apt /tmp/packages.apt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
     apt-get update &&\
-    apt-get install -y curl gnupg ca-certificates --no-install-recommends &&\
+    apt-get install -y curl gnupg lsb-release ca-certificates --no-install-recommends &&\
     apt-get upgrade -y &&\
     apt-get autoremove -y &&\
     apt-get clean &&\
