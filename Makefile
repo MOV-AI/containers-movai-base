@@ -210,7 +210,7 @@ push-all: setup-multiarch
 
 print-sizes:
 	@echo "images sizes:"
-	docker images $(REGISTRY) --format "{{.Repository}}\t{{.Tag}}\t{{.Size}}"
+	@docker images $(REGISTRY) --format "{{.Repository}}\t{{.Tag}}\t{{.Size}}"
 
 check-main-images-sizes:
 	@MAX_SIZE_MB=1250; \
