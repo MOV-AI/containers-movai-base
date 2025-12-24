@@ -23,6 +23,7 @@ SUDO_COMMANDS=(
     /usr/bin/apt-cache
     /usr/bin/apt-mark
     /usr/bin/add-apt-repository
+    /usr/bin/update-alternatives
 )
 
 # Setup available sudo commands for user movai
@@ -34,9 +35,9 @@ for SUDO_COMMAND in ${SUDO_COMMANDS[@]}; do
 done
 
 {
-    echo "Package: *" 
+    echo "Package: *"
     echo "Pin: origin artifacts.cloud.mov.ai"
-    echo "Pin-Priority: 1001" 
+    echo "Pin-Priority: 1001"
 } >> /etc/apt/preferences.d/movai
 
 {

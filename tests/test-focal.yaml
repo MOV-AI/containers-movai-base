@@ -1,0 +1,23 @@
+schemaVersion: '2.0.0'
+commandTests:
+  - name: "python3 version"
+    command: "python3"
+    args: ["--version"]
+    expectedOutput: ["Python 3.8"]
+  - name: "whoami"
+    command: "whoami"
+    expectedOutput: ["root"]
+  - name: "lsb_release version"
+    command: "lsb_release"
+    args: ["-r"]
+    expectedOutput: ["20.04"]
+fileExistenceTests:
+  - name: "MOV.AI app dir"
+    path: "/opt/mov.ai/app"
+    shouldExist: true
+  - name: "MOV.AI logs dir"
+    path: "/opt/mov.ai/logs"
+    shouldExist: true
+  - name: "MOV.AI updates dir"
+    path: "/opt/mov.ai/updates"
+    shouldExist: true

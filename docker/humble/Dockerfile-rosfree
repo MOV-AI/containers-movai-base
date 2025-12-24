@@ -1,5 +1,5 @@
-# This Dockerfile is the base image for Mov.ai - Based on ROS NOETIC
-FROM ros:noetic-ros-base
+# This Dockerfile is the base image for Mov.ai - Based on Ubuntu 22.04
+FROM ubuntu:22.04 AS base
 
 # Labels
 LABEL description="MOV.AI Base Image"
@@ -7,12 +7,13 @@ LABEL maintainer="devops@mov.ai"
 
 # Arguments
 ARG USER_ID=1000
-ARG ROS_VERSION="noetic"
+ARG ROS_VERSION="humble"
 ARG APT_REPOSITORY="https://artifacts.aws.cloud.mov.ai/repository"
 
 ### Environment config
 ENV MOVAI_HOME="/opt/mov.ai" \
-    ROS_VERSION="$ROS_VERSION"
+    ROS_VERSION="$ROS_VERSION" \
+    ROS_DISTRO="$ROS_VERSION"
 ENV APP_PATH="${MOVAI_HOME}/app" \
     APP_LOGS="${MOVAI_HOME}/logs" \
     APP_UPDATES="${MOVAI_HOME}/updates" \
@@ -48,18 +49,14 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
     rm -rf /var/lib/apt/lists/* &&\
     rm -rf /var/log/*
 
-COPY files/apt/movai-ubuntu-archive-proxy.list /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list
-COPY files/apt/movai-ubuntu-ports-proxy.list /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list
-COPY files/apt/movai-ubuntu-security-proxy.list /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list
-COPY files/apt/movai-ros-proxy.list /etc/apt/sources.list.d/movai-ros-proxy.list
-
+# COPY files/apt/movai-ubuntu-archive-proxy.list /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list
+# COPY files/apt/movai-ubuntu-ports-proxy.list /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list
+# COPY files/apt/movai-ubuntu-security-proxy.list /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list
+# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# RUN mv /etc/apt/sources.list /etc/apt/sources.list.bck &&\
+#    touch /etc/apt/sources.list &&\
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN find /etc/apt/sources.list.d/ -type f -name 'ros*.list' -exec rm {} \; &&\
-    curl -fsSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | gpg --dearmor -o /usr/share/keyrings/ros.key &&\
-    apt-key add /usr/share/keyrings/ros.key &&\
-    mv /etc/apt/sources.list /etc/apt/sources.list.bck &&\
-    touch /etc/apt/sources.list &&\
-    curl -fsSL $APT_REPOSITORY/movai-applications/gpg | apt-key add -  &&\
+RUN curl -fsSL $APT_REPOSITORY/movai-applications/gpg | apt-key add -  &&\
     #if [ "$(uname -m)" != "x86_64" ] ; then\
     # Remove irrelevant source lists based on architecture
     #rm /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list &&\
@@ -81,3 +78,17 @@ RUN /usr/local/bin/user-provision.sh
 SHELL ["/bin/bash", "-c"]
 WORKDIR ${APP_PATH}
 ENTRYPOINT [ "docker-entrypoint.sh" ]
+
+FROM base AS jammy-python38
+ENV PYTHON_VERSION=3.8 \
+    PIP_PACKAGE_REPO="https://artifacts.cloud.mov.ai/repository/pypi-experimental/simple" \
+    PPA_REPOSITORY="ppa:deadsnakes/ppa"
+
+USER root
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN add-apt-repository "${PPA_REPOSITORY}" && \
+    apt-get install -y --no-install-recommends "python${PYTHON_VERSION}" "python${PYTHON_VERSION}-distutils" && \
+    curl -sS "https://bootstrap.pypa.io/pip/${PYTHON_VERSION}/get-pip.py" | "python${PYTHON_VERSION}" - && \
+    apt-get clean -y > /dev/null && \
+    rm -rf /var/cache/apt/* && \
+    rm -rf /var/lib/apt/lists/*
