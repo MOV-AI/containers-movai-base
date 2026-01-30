@@ -44,7 +44,7 @@ jobs:
 
 
   movai-base-noetic:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@DP-963_docker-image-v3
     needs: test-stable-images
     with:
       docker_file: docker/noetic/Dockerfile
@@ -66,7 +66,7 @@ jobs:
       snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-focal:
     needs: test-stable-images
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@DP-963_docker-image-v3
     with:
       docker_file: docker/noetic/Dockerfile-rosfree
       docker_image: devops/movai-base-focal
@@ -88,7 +88,7 @@ jobs:
       snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-focal-python310:
     needs: test-stable-images
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@DP-963_docker-image-v3
     with:
       docker_file: docker/noetic/Dockerfile-rosfree
       docker_image: devops/movai-base-focal-python310
@@ -110,7 +110,7 @@ jobs:
       snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-humble:
     needs: test-stable-images
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@DP-963_docker-image-v3
     with:
       docker_file: docker/humble/Dockerfile
       docker_image: devops/movai-base-humble
@@ -131,7 +131,7 @@ jobs:
       snyk_token: ${{ secrets.SNYK_TOKEN }}
   movai-base-humble-python38:
     needs: test-stable-images
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@DP-963_docker-image-v3
     with:
       docker_file: docker/humble/Dockerfile
       docker_image: devops/movai-base-humble-python38
