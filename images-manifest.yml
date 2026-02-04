@@ -1,0 +1,47 @@
+version: 1.0.0
+
+images:
+  - name: noetic
+    docker_file: docker/noetic/Dockerfile
+    docker_image: devops/movai-base-noetic
+    public_image: ce/movai-base-noetic
+    platforms: linux/amd64, linux/arm/v7, linux/arm64
+    public: true
+    snyk_check: true
+    target: null
+
+  - name: focal
+    docker_file: docker/noetic/Dockerfile-rosfree
+    docker_image: devops/movai-base-focal
+    public_image: ce/movai-base-focal
+    platforms: linux/amd64, linux/arm/v7, linux/arm64
+    public: true
+    snyk_check: true
+    target: base
+
+  - name: focal-python310
+    docker_file: docker/noetic/Dockerfile-rosfree
+    docker_image: devops/movai-base-focal-python310
+    public_image: ce/movai-base-focal-python310
+    platforms: linux/amd64
+    public: true
+    snyk_check: true
+    target: rosfree-python310
+
+  - name: humble
+    docker_file: docker/humble/Dockerfile
+    docker_image: devops/movai-base-humble
+    public_image: ce/movai-base-humble
+    platforms: linux/amd64, linux/arm64
+    public: true
+    snyk_check: true
+    target: null
+
+  - name: humble-python38
+    docker_file: docker/humble/Dockerfile
+    docker_image: devops/movai-base-humble-python38
+    public_image: ce/movai-base-humble-python38
+    platforms: linux/amd64, linux/arm64
+    public: true
+    snyk_check: true
+    target: humble-python38
