@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2021 MOV.AI
+# Copyright 2026 MOV.AI
 #
 #    Licensed under the Mov.AI License version 1.0;
 #    you may not use this file except in compliance with the License.
