@@ -15,13 +15,14 @@ HUMBLE_TAG = $(REGISTRY):humble
 HUMBLE_PYTHON38_TAG = $(REGISTRY):humble-python38
 JAMMY_TAG = $(REGISTRY):jammy
 JAMMY_PYTHON38_TAG = $(REGISTRY):jammy-python38
+ALPINE_PYTHON38_TAG = $(REGISTRY):alpine-python38
 
 # Deprecated image tags
 MELODIC_TAG = $(REGISTRY):melodic
 BIONIC_TAG = $(REGISTRY):bionic
 
 # All image tags
-ALL_TAGS = $(NOETIC_TAG) $(HUMBLE_TAG) $(FOCAL_TAG) $(FOCAL_PYTHON310_TAG) $(HUMBLE_PYTHON38_TAG)
+ALL_TAGS = $(NOETIC_TAG) $(HUMBLE_TAG) $(FOCAL_TAG) $(FOCAL_PYTHON310_TAG) $(HUMBLE_PYTHON38_TAG) $(ALPINE_PYTHON38_TAG)
 
 .PHONY: help build build-all run test clean setup-multiarch
 .PHONY: build-noetic build-focal build-focal-python310 build-humble build-humble-python38 build-jammy build-jammy-python38
@@ -71,7 +72,7 @@ help:
 	@echo "  DOCKER_PLATFORMS    - Target platforms for buildx (default: linux/amd64,linux/armhf,linux/arm64)"
 
 # Active Build targets
-build-all: build-noetic build-focal build-focal-python310 build-humble build-humble-python38 build-jammy build-jammy-python38
+build-all: build-noetic build-focal build-focal-python310 build-humble build-humble-python38 build-jammy build-jammy-python38 build-alpine-python38
 build-noetic:
 	@echo "Building MOV.AI Base Noetic (ROS Noetic)..."
 	docker build $(BUILD_OPTIONS) -t $(NOETIC_TAG) -f docker/noetic/Dockerfile .
@@ -111,6 +112,9 @@ build-bionic:
 	@echo "Building MOV.AI Base Bionic (Ubuntu 18.04)..."
 	docker build $(BUILD_OPTIONS) -t $(BIONIC_TAG) -f docker/melodic/Dockerfile-rosfree .
 
+build-alpine38:
+	docker build $(BUILD_OPTIONS) -t $(ALPINE_PYTHON38_TAG) -f docker/alpine-py38/Dockerfile .
+
 # Run targets - Start interactive containers
 run-melodic: build-melodic
 	@echo "Starting interactive melodic container..."
@@ -148,12 +152,15 @@ run-jammy-python38: build-jammy-python38
 	@echo "Starting interactive jammy-python38 container..."
 	docker run --rm -it --user movai $(JAMMY_PYTHON38_TAG) bash
 
+run-alpine-python38: build-alpine38
+	@echo "Starting interactive alpine-python38 container..."
+	docker run --rm -it --user movai $(ALPINE_PYTHON38_TAG) bash
 
 # Use container-structure-test for image verification
 CONTAINER_STRUCTURE_TEST ?= container-structure-test
 
 # Test targets - Run verification tests (only active flavors)
-test-all: test-noetic test-focal test-focal-python310 test-humble test-humble-python38 test-jammy test-jammy-python38
+test-all: test-noetic test-focal test-focal-python310 test-humble test-humble-python38 test-jammy test-jammy-python38 test-alpine-python38
 
 test-noetic: build-noetic
 	@echo "Testing noetic image with container-structure-test..."
@@ -174,6 +181,10 @@ test-focal-python310: build-focal-python310
 test-humble-python38: build-humble-python38
 	@echo "Testing humble-python38 image with container-structure-test..."
 	@$(CONTAINER_STRUCTURE_TEST) test --image $(HUMBLE_PYTHON38_TAG) --config tests/test-humble-python38.yaml
+
+test-alpine-python38: build-alpine38
+	@echo "Testing alpine-python38 image with container-structure-test..."
+	@$(CONTAINER_STRUCTURE_TEST) test --image $(ALPINE_PYTHON38_TAG) --config tests/test-alpine-python38.yaml
 
 # Multi-architecture build setup
 setup-multiarch:

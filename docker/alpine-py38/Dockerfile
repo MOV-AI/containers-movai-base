@@ -31,7 +31,7 @@ COPY files/movai-entrypoint.sh /usr/local/bin/movai-entrypoint.sh
 # Install base packages
 COPY files/alpine-packages.bash /tmp/packages.bash
 COPY files/alpine-install-packages.sh /usr/local/bin/install-packages.sh
-COPY docker/alpine-py28/packages.apk /tmp/packages.apk
+COPY docker/alpine-py38/packages.apk /tmp/packages.apk
 
 RUN apk add bash sudo
 
