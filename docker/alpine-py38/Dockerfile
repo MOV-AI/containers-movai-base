@@ -33,9 +33,6 @@ COPY files/alpine-packages.bash /tmp/packages.bash
 COPY files/alpine-install-packages.sh /usr/local/bin/install-packages.sh
 COPY docker/alpine-py38/packages.apk /tmp/packages.apk
 
-RUN apk add bash sudo
-
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN /usr/local/bin/install-packages.sh
 
 # Run user provision
