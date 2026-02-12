@@ -112,7 +112,7 @@ build-bionic:
 	@echo "Building MOV.AI Base Bionic (Ubuntu 18.04)..."
 	docker build $(BUILD_OPTIONS) -t $(BIONIC_TAG) -f docker/melodic/Dockerfile-rosfree .
 
-build-alpine38:
+build-alpine-python38:
 	docker build $(BUILD_OPTIONS) -t $(ALPINE_PYTHON38_TAG) -f docker/alpine-py38/Dockerfile .
 
 # Run targets - Start interactive containers
@@ -152,7 +152,7 @@ run-jammy-python38: build-jammy-python38
 	@echo "Starting interactive jammy-python38 container..."
 	docker run --rm -it --user movai $(JAMMY_PYTHON38_TAG) bash
 
-run-alpine-python38: build-alpine38
+run-alpine-python38: build-alpine-python38
 	@echo "Starting interactive alpine-python38 container..."
 	docker run --rm -it --user movai $(ALPINE_PYTHON38_TAG) bash
 
@@ -182,7 +182,7 @@ test-humble-python38: build-humble-python38
 	@echo "Testing humble-python38 image with container-structure-test..."
 	@$(CONTAINER_STRUCTURE_TEST) test --image $(HUMBLE_PYTHON38_TAG) --config tests/test-humble-python38.yaml
 
-test-alpine-python38: build-alpine38
+test-alpine-python38: build-alpine-python38
 	@echo "Testing alpine-python38 image with container-structure-test..."
 	@$(CONTAINER_STRUCTURE_TEST) test --image $(ALPINE_PYTHON38_TAG) --config tests/test-alpine-python38.yaml
 
