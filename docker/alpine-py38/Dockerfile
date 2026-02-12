@@ -1,4 +1,4 @@
-# This Dockerfile is the base image for Mov.ai - Based on ROS2 HUMBLE
+# This Dockerfile is the base image for Mov.ai - Based on Alpine Python 3.8
 FROM python:3.8-alpine AS base
 
 # Labels
