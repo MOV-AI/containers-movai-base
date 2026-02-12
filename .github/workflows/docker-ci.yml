@@ -156,16 +156,16 @@ jobs:
     needs: test-stable-images
     uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
     with:
-      docker_file: docker/humble/Dockerfile
-      docker_image: devops/movai-base-humble-python38
+      docker_file: docker/alpine-py38/Dockerfile
+      docker_image: devops/movai-base-alpine-python38
       public: true
-      public_image: ce/movai-base-humble-python38
+      public_image: ce/movai-base-alpine-python38
       deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
       version: ${GITHUB_REF##*/}
       push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
       snyk_check: true
       platforms: linux/amd64, linux/arm64
-      target: humble-python38
+      target: alpine-python38
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
