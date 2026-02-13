@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [noetic, humble, focal, focal-python310, humble-python38, alpine-python38]
+        distro: [noetic, humble, focal, focal-python310, humble-python38, alpine-python38, python38-slim]
     name: "Test movai-base-${{ matrix.distro }} image"
     steps:
       - uses: actions/checkout@v5
