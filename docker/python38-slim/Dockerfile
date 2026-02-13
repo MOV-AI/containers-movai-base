@@ -31,7 +31,7 @@ COPY files/movai-entrypoint.sh /usr/local/bin/movai-entrypoint.sh
 # Install base packages
 COPY files/packages.bash /tmp/packages.bash
 COPY files/install-packages.sh /usr/local/bin/install-packages.sh
-COPY docker/debian-bookworm/packages.apt /tmp/packages.apt
+COPY docker/python38-slim/packages.apt /tmp/packages.apt
 
 # switching pypi index capability
 COPY files/setup-pypi-env.sh /usr/local/bin/setup-pypi-env.sh
