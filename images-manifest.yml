@@ -45,3 +45,12 @@ images:
     public: true
     snyk_check: true
     target: humble-python38
+
+  - name: alpine-python38
+    docker_file: docker/alpine-py38/Dockerfile
+    docker_image: devops/movai-base-alpine-python38
+    public_image: ce/movai-base-alpine-python38
+    platforms: linux/amd64, linux/arm64
+    public: true
+    snyk_check: true
+    target: null
