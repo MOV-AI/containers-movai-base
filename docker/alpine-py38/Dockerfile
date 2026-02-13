@@ -33,6 +33,10 @@ COPY files/alpine-packages.bash /tmp/packages.bash
 COPY files/alpine-install-packages.sh /usr/local/bin/install-packages.sh
 COPY docker/alpine-py38/packages.apk /tmp/packages.apk
 
+# switching pypi index capability
+COPY files/setup-pypi-env.sh /usr/local/bin/setup-pypi-env.sh
+COPY resources /usr/local/share/pypi-confs/resources
+
 RUN /usr/local/bin/install-packages.sh
 
 # Run user provision
