@@ -1,14 +1,15 @@
 name: "Build&Deploy movai-base images"
 on:
   push:
+    branches:
+      - main
     tags:
-      - 'v*.*.*'
+      - 'v*'
   pull_request:
     branches:
       - main
       - dev
-  release:
-    types: [released]
+
 jobs:
   test-stable-images:
     runs-on: ubuntu-latest
@@ -42,20 +43,14 @@ jobs:
           make check-main-images-sizes || true
 
 
-
-  movai-base-noetic:
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
+  build-and-deploy:
     needs: test-stable-images
+    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v3
     with:
-      docker_file: docker/noetic/Dockerfile
-      docker_image: devops/movai-base-noetic
-      public: true
-      public_image: ce/movai-base-noetic
+      manifest_file: images-manifest.yml
       deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
-      version: ${GITHUB_REF##*/}
+      version: auto
       push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
-      snyk_check: true
-      platforms: linux/amd64, linux/arm/v7, linux/arm64
     secrets:
       registry_user: ${{ secrets.PORTUS_APP_USER }}
       registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
@@ -64,134 +59,6 @@ jobs:
       github_registry_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
       github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
       snyk_token: ${{ secrets.SNYK_TOKEN }}
-  movai-base-focal:
-    needs: test-stable-images
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
-    with:
-      docker_file: docker/noetic/Dockerfile-rosfree
-      docker_image: devops/movai-base-focal
-      public: true
-      public_image: ce/movai-base-focal
-      deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
-      version: ${GITHUB_REF##*/}
-      push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
-      snyk_check: true
-      platforms: linux/amd64, linux/arm/v7, linux/arm64
-      target: base
-    secrets:
-      registry_user: ${{ secrets.PORTUS_APP_USER }}
-      registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-      pub_registry_user: ${{ secrets.PORTUS_APP_USER }}
-      pub_registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-      github_registry_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
-      github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
-      snyk_token: ${{ secrets.SNYK_TOKEN }}
-  movai-base-focal-python310:
-    needs: test-stable-images
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
-    with:
-      docker_file: docker/noetic/Dockerfile-rosfree
-      docker_image: devops/movai-base-focal-python310
-      public: true
-      public_image: ce/movai-base-focal-python310
-      deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
-      version: ${GITHUB_REF##*/}
-      push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
-      snyk_check: true
-      platforms: linux/amd64
-      target: rosfree-python310
-    secrets:
-      registry_user: ${{ secrets.PORTUS_APP_USER }}
-      registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-      pub_registry_user: ${{ secrets.PORTUS_APP_USER }}
-      pub_registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-      github_registry_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
-      github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
-      snyk_token: ${{ secrets.SNYK_TOKEN }}
-  movai-base-humble:
-    needs: test-stable-images
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
-    with:
-      docker_file: docker/humble/Dockerfile
-      docker_image: devops/movai-base-humble
-      public: true
-      public_image: ce/movai-base-humble
-      deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
-      version: ${GITHUB_REF##*/}
-      push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
-      snyk_check: true
-      platforms: linux/amd64, linux/arm64
-    secrets:
-      registry_user: ${{ secrets.PORTUS_APP_USER }}
-      registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-      pub_registry_user: ${{ secrets.PORTUS_APP_USER }}
-      pub_registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-      github_registry_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
-      github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
-      snyk_token: ${{ secrets.SNYK_TOKEN }}
-  movai-base-humble-python38:
-    needs: test-stable-images
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
-    with:
-      docker_file: docker/humble/Dockerfile
-      docker_image: devops/movai-base-humble-python38
-      public: true
-      public_image: ce/movai-base-humble-python38
-      deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
-      version: ${GITHUB_REF##*/}
-      push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
-      snyk_check: true
-      platforms: linux/amd64, linux/arm64
-      target: humble-python38
-    secrets:
-      registry_user: ${{ secrets.PORTUS_APP_USER }}
-      registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-      pub_registry_user: ${{ secrets.PORTUS_APP_USER }}
-      pub_registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-      github_registry_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
-      github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
-      snyk_token: ${{ secrets.SNYK_TOKEN }}
-
-  movai-base-alpine-python38:
-    needs: test-stable-images
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
-    with:
-      docker_file: docker/alpine-py38/Dockerfile
-      docker_image: devops/movai-base-alpine-python38
-      public: true
-      public_image: ce/movai-base-alpine-python38
-      deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
-      version: ${GITHUB_REF##*/}
-      push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
-      snyk_check: true
-      platforms: linux/amd64, linux/arm64
-    secrets:
-      registry_user: ${{ secrets.PORTUS_APP_USER }}
-      registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-      pub_registry_user: ${{ secrets.PORTUS_APP_USER }}
-      pub_registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-      github_registry_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
-      github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
-      snyk_token: ${{ secrets.SNYK_TOKEN }}
-
-  movai-base-python38-slim:
-    needs: test-stable-images
-    uses: MOV-AI/.github/.github/workflows/docker-workflow.yml@v2
-    with:
-      docker_file: docker/python38-slim/Dockerfile
-      docker_image: devops/movai-base-python38-slim
-      public: true
-      public_image: ce/movai-base-python38-slim
-      deploy: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v')}}
-      version: ${GITHUB_REF##*/}
-      push_latest: ${{ contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/tags/v') }}
-      snyk_check: true
-      platforms: linux/amd64, linux/arm64
-    secrets:
-      registry_user: ${{ secrets.PORTUS_APP_USER }}
-      registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-      pub_registry_user: ${{ secrets.PORTUS_APP_USER }}
-      pub_registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
-      github_registry_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
-      github_registry_password: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
-      snyk_token: ${{ secrets.SNYK_TOKEN }}
+      commit_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
+      commit_mail: ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
+      commit_token: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
