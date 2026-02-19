@@ -15,6 +15,8 @@ Image is built in 6 active flavours:
 | movai-base-humble-python38 | ros:humble-ros-base | 3.10(default) & 3.8.10 |
 | movai-base-jammy | ubuntu:22.04 | 3.10 |
 | movai-base-jammy-python38 | ubuntu:22.04 | 3.10(default) & 3.8.10 |
+| movai-base-alpine-python38 | python:3.8-alpine (alpine v3.20)| 3.8(default) |
+| movai-base-python38-slim | python:3.8-slim (debian 12) | 3.8(default) |
 
 ## Deprecated Flavours
 
