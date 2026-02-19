@@ -40,7 +40,6 @@ PIP_REQUIREMENTS=/tmp/requirements.txt
 
 # If there is a python requirements script, install packages then clean up
 [ -f ${PIP_REQUIREMENTS} ] && {
-    apt-get install --reinstall python3-pip
     python3 -m pip install --upgrade pip;
     python3 -m pip install --upgrade -r ${PIP_REQUIREMENTS};
     rm --preserve-root ${PIP_REQUIREMENTS};
