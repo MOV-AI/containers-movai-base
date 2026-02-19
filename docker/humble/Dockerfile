@@ -65,10 +65,15 @@ RUN curl -fsSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | 
     #rm /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list &&\
     #rm /etc/apt/sources.list.d/movai-ubuntu-archive* &&\
     #rm /etc/apt/sources.list.d/movai-ubuntu-security* ;\
-    # if any tool is not available for arm architectures
-    #sed -i '/<tool>/d' /tmp/packages.apt ;\
+    #redis-tools is not available for arm architectures
+    #sed -i '/redis-tools/d' /tmp/packages.apt ;\
     #fi &&\
-    /usr/local/bin/install-packages.sh
+    apt-get update &&\
+    /usr/local/bin/install-packages.sh &&\
+    apt-get clean &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    rm -rf /var/log/*
+
 # Run user provision
 COPY files/user.rc /tmp/user.rc
 RUN /usr/local/bin/user-provision.sh
