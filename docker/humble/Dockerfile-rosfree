@@ -1,5 +1,5 @@
 # This Dockerfile is the base image for Mov.ai - Based on Ubuntu 22.04
-FROM ubuntu:22.04 AS base
+FROM ubuntu:24.04 AS base
 
 # Labels
 LABEL description="MOV.AI Base Image"
