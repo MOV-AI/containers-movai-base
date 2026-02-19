@@ -5,7 +5,9 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: "pip" # See documentation for possible values
-    directory: "docker/noetic/" # Location of package manifests
+  - package-ecosystem: "docker"
+    directories:
+      - "docker/noetic/"
+      - "docker/humble/"
     schedule:
       interval: "weekly"
