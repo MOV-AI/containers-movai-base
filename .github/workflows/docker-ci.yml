@@ -1,15 +1,13 @@
 name: "Build&Deploy movai-base images"
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches:
+      - main
   pull_request:
     branches:
       - main
       - dev
-  release:
-    types: [released]
-
+      
 jobs:
   test-stable-images:
     runs-on: ubuntu-latest
