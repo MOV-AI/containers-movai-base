@@ -38,6 +38,16 @@ COPY files/movai-entrypoint.sh /usr/local/bin/movai-entrypoint.sh
 COPY files/packages.bash /tmp/packages.bash
 COPY docker/$ROS_VERSION/packages.apt /tmp/packages.apt
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
+    apt-get update &&\
+    apt-get install -y curl gnupg lsb-release ca-certificates --no-install-recommends &&\
+    apt-get upgrade -y &&\
+    apt-get autoremove -y &&\
+    apt-get clean &&\
+    rm -rf /var/lib/apt/lists/* &&\
+    rm -rf /var/log/*
+
 COPY files/apt-jammy/movai-ros2-proxy.list /etc/apt/sources.list.d/movai-ros2-proxy.list
 COPY files/apt-jammy/movai-ubuntu-archive-proxy.list /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list
 COPY files/apt-jammy/movai-ubuntu-security-proxy.list /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list
