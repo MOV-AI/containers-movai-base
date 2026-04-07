@@ -1,0 +1,4 @@
+# Add jammy security proxy
+deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-security-jammy/ jammy-security main restricted
+deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-security-jammy/ jammy-security universe
+deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-security-jammy/ jammy-security multiverse
