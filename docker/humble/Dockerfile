@@ -38,27 +38,17 @@ COPY files/movai-entrypoint.sh /usr/local/bin/movai-entrypoint.sh
 COPY files/packages.bash /tmp/packages.bash
 COPY docker/$ROS_VERSION/packages.apt /tmp/packages.apt
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections &&\
-    apt-get update &&\
-    apt-get install -y curl gnupg lsb-release ca-certificates --no-install-recommends &&\
-    apt-get upgrade -y &&\
-    apt-get autoremove -y &&\
-    apt-get clean &&\
-    rm -rf /var/lib/apt/lists/* &&\
-    rm -rf /var/log/*
-
 COPY files/apt-jammy/movai-ros2-proxy.list /etc/apt/sources.list.d/movai-ros2-proxy.list
+COPY files/apt-jammy/movai-ubuntu-ports-proxy.list /etc/apt/sources.list.d/movai-ubuntu-ports-proxy.list
 COPY files/apt-jammy/movai-ubuntu-archive-proxy.list /etc/apt/sources.list.d/movai-ubuntu-archive-proxy.list
 COPY files/apt-jammy/movai-ubuntu-security-proxy.list /etc/apt/sources.list.d/movai-ubuntu-security-proxy.list
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN mv /etc/apt/sources.list /etc/apt/sources.list.bck &&\
-    rm /etc/apt/sources.list.d/ros2.sources && \
-    touch /etc/apt/sources.list
-
 RUN curl -fsSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | gpg --dearmor -o /usr/share/keyrings/ros.key &&\
     apt-key add /usr/share/keyrings/ros.key &&\
+    mv /etc/apt/sources.list /etc/apt/sources.list.bck &&\
+    rm /etc/apt/sources.list.d/ros2.sources && \
+    touch /etc/apt/sources.list &&\
     curl -fsSL $APT_REPOSITORY/movai-applications/gpg | apt-key add -  &&\
     #if [ "$(uname -m)" != "x86_64" ] ; then\
     # Remove irrelevant source lists based on architecture
