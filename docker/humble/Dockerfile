@@ -69,13 +69,11 @@ ENTRYPOINT [ "docker-entrypoint.sh" ]
 
 FROM base AS humble-python38
 ENV PYTHON_VERSION=3.8 \
-    PIP_PACKAGE_REPO="https://artifacts.cloud.mov.ai/repository/pypi-experimental/simple" \
-    PPA_REPOSITORY="ppa:deadsnakes/ppa"
+    PIP_PACKAGE_REPO="https://artifacts.cloud.mov.ai/repository/pypi-experimental/simple"
 
 USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN add-apt-repository "${PPA_REPOSITORY}" && \
-    apt-get install -y --no-install-recommends "python${PYTHON_VERSION}" "python${PYTHON_VERSION}-distutils" && \
+RUN apt-get install -y --no-install-recommends "python${PYTHON_VERSION}" "python${PYTHON_VERSION}-distutils" && \
     curl -sS "https://bootstrap.pypa.io/pip/${PYTHON_VERSION}/get-pip.py" | "python${PYTHON_VERSION}" - && \
     apt-get clean -y > /dev/null && \
     rm -rf /var/cache/apt/* && \
