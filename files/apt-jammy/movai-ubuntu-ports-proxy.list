@@ -1,0 +1,20 @@
+# Add ports jammy proxy
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy jammy universe
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy jammy multiverse
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy jammy main
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy jammy restricted
+# Add ports jammy-updates proxy
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-updates jammy-updates main
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-updates jammy-updates multiverse
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-updates jammy-updates universe
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-updates jammy-updates restricted
+# Add ports jammy-backports proxy
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-backports jammy-backports universe
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-backports jammy-backports main
+# Add ports jammy-security proxy
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-security jammy-security main
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-security jammy-security multiverse
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-security jammy-security universe
+deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-security jammy-security restricted
+# Add backup of jammy-ports
+# deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-backup ports-jammy-backup main

@@ -1,0 +1,2 @@
+# Add ROS2 proxy
+deb [signed-by=/usr/share/keyrings/ros.key] https://artifacts.aws.cloud.mov.ai/repository/ppa-proxy-ros2/ jammy main
