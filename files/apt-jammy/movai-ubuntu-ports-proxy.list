@@ -17,4 +17,4 @@ deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-j
 deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-security jammy-security universe
 deb [arch=arm64,armhf] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-security jammy-security restricted
 # Add backup of jammy-ports
-# deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-backup ports-jammy-backup main
+deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-ports-jammy-backup ports-jammy-backup main
