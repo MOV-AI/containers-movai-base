@@ -13,3 +13,5 @@ deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-jammy
 deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-jammy-backports jammy-backports multiverse
 deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-jammy-backports jammy-backports main
 deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-jammy-backports jammy-backports restricted
+# Add backup of jammy-archive
+# deb [arch=amd64] https://artifacts.aws.cloud.mov.ai/repository/ppa-archive-jammy-backup jammy-backup main
