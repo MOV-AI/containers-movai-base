@@ -182,6 +182,10 @@ test-focal: build-focal
 	@echo "Testing focal image with container-structure-test..."
 	@$(CONTAINER_STRUCTURE_TEST) test --image $(FOCAL_TAG) --config tests/test-focal.yaml
 
+test-jammy: build-jammy
+	@echo "Testing jammy image with container-structure-test..."
+	@$(CONTAINER_STRUCTURE_TEST) test --image $(JAMMY_TAG) --config tests/test-jammy.yaml
+
 test-focal-python310: build-focal-python310
 	@echo "Testing focal-python310 image with container-structure-test..."
 	@$(CONTAINER_STRUCTURE_TEST) test --image $(FOCAL_PYTHON310_TAG) --config tests/test-focal-python310.yaml
